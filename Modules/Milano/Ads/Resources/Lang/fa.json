@@ -1,0 +1,23 @@
+{
+    "home":  "صفحه اصلی",
+    "single-product": "صفحه محصول",
+    "single-article":  "صفحه مقاله",
+    "new-tab": "پنجره جدید",
+    "pop-ap":  "پاپ آپ",
+    "banner": "بنر",
+    "always-active": "همیشه فعال",
+    "one-time-per-day": " یکبار در روز",
+    "two-time-per-day":  "دو بار در روز",
+    "three-time-per-day": "سه بار در روز",
+    "four-time-per-day":  "چهار بار در روز",
+    "five-time-per-day": "پنج بار در روز",
+    "six-time-per-day":  "شش بار در روز",
+    "seven-time-per-day": "هفت بار در روز",
+    "eight-time-per-day":  "هشت بار در روز",
+    "nin-time-per-day": "نه بار در روز",
+    "ten-time-per-day":  "ده بار در روز",
+
+    "accepted" : "تایید شده",
+    "rejected" : "رد شده",
+    "pending" : "درحال انتظار"
+}

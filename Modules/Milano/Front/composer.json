@@ -1,0 +1,15 @@
+{
+    "name": "milano/front",
+    "autoload": {
+        "psr-4": {
+            "Milano\\Front\\": "src"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "\\Milano\\Front\\Providers\\FrontServiceProvider"
+            ]
+        }
+    }
+}

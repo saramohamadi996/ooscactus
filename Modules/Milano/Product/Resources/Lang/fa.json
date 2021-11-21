@@ -1,0 +1,8 @@
+{
+    "cash" : "نقدی",
+    "available" : " موجود",
+    "unavailable" : "ناموجود ",
+    "accepted" : "تایید شده",
+    "rejected" : "رد شده",
+    "pending" : "درحال انتظار"
+}

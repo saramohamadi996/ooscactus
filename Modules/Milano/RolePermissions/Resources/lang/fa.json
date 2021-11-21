@@ -1,0 +1,21 @@
+{
+    "super admin" : "مدیرکل",
+    "manage users" : "مدیریت کاربران",
+    "manage role_permissions" : "مدیریت نقش های کاربری",
+    "manage categories" : "مدیریت دسته بندی ها",
+    "manage products" : "مدیریت محصولات",
+    "manage own products" : "مدیریت محصولات خود",
+    "sell": "فروش",
+    "seller": "فروشنده",
+    "manage articles" : "مدیریت مقالات",
+    "manage comments" : "مدیریت نظرات",
+    "manage slideshows" : "مدیریت اسلایدشو",
+    "manage coupons" : "مدیریت تخفیف ها",
+    "manage adss" : "مدیریت تبلیغات",
+    "manage settings" : "مدیریت تنظیمات",
+    "manage payments" : "مدیریت  تراکنش ها",
+    "manage banners" : "مدیریت بنرها ",
+    "manage baners" : "مدیریت شبکه های اجتماعی ",
+    "manage sellers" : "مدیریت  همکاری با ما",
+    "customer": "مشتری"
+}

@@ -1,0 +1,18 @@
+{
+    "name": "milano/common",
+    "autoload": {
+        "psr-4": {
+            "Milano\\Common\\": "src"
+        },
+        "files": [
+            "src/helpers.php"
+        ]
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "\\Milano\\Common\\Providers\\CommonServiceProvider"
+            ]
+        }
+    }
+}

@@ -1,0 +1,15 @@
+{
+    "name": "milano/payment",
+    "autoload": {
+        "psr-4": {
+            "Milano\\Payment\\": "src"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "\\Milano\\Payment\\Providers\\PaymentServiceProvider"
+            ]
+        }
+    }
+}
