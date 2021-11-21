@@ -5,7 +5,7 @@
     "keywords": ["framework", "laravel"],
     "license": "MIT",
     "require": {
-        "php": "^7.3|^8.0",
+        "php": "^7.4.10|^8.0",
         "fruitcake/laravel-cors": "^2.0",
         "guzzlehttp/guzzle": "^7.0.1",
         "laravel/framework": "^8.65",
@@ -14,7 +14,8 @@
         "laravel/ui": "^3.3",
         "livewire/livewire": "^2.7",
         "morilog/jalali": "^3.2",
-        "spatie/laravel-permission": "^5.4"
+        "spatie/laravel-permission": "^5.4",
+        "ext-soap": "*"
     },
     "require-dev": {
         "facade/ignition": "^2.5",
@@ -28,7 +29,27 @@
         "psr-4": {
             "App\\": "app/",
             "Database\\Factories\\": "database/factories/",
-            "Database\\Seeders\\": "database/seeders/"
+            "Database\\Seeders\\": "database/seeders/",
+            "Milano\\Baner\\": "Modules/Milano/Baner",
+            "Milano\\Category\\": "Modules/Milano/Category/",
+            "Milano\\Dashboard\\": "Modules/Milano/Dashboard/",
+            "Milano\\Product\\": "Modules/Milano/Product/",
+            "Milano\\RolePermissions\\": "Modules/Milano/RolePermissions/",
+            "Milano\\User\\": "Modules/Milano/User/",
+            "Milano\\Article\\": "Modules/Milano/Article/",
+            "Milano\\Coupon\\": "Modules/Milano/Coupon",
+            "Milano\\Comment\\": "Modules/Milano/Comment/",
+            "Milano\\Banner\\": "Modules/Milano/Banner",
+            "Milano\\Slideshow\\": "Modules/Milano/Slideshow",
+            "Milano\\Ads\\": "Modules/Milano/Ads",
+            "Milano\\Setting\\": "Modules/Milano/Setting",
+            "Milano\\Contact\\": "Modules/Milano/Seller",
+            "Milano\\Cart\\": "Modules/Milano/Cart",
+            "Milano\\Seller\\": "Modules/Milano/Seller",
+            "Milano\\Order\\": "Modules/Milano/Order",
+            "Milano\\Payment\\": "Modules/Milano/Payment",
+            "Milano\\Common\\": "Modules/Milano/Common",
+            "Milano\\Front\\": "Modules/Milano/Front"
         }
     },
     "autoload-dev": {

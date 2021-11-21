@@ -13,7 +13,6 @@ class UsersTableSeeder extends Seeder
                 ,[
                 "email" => $user['email'],
                 "name" => $user['name'],
-                "username" => $user['username'],
                 "password" => bcrypt($user['password'])
             ])->assignRole($user['role'])->markEmailAsVerified();
         }

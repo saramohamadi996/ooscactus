@@ -1,6 +1,7 @@
 <?php
 
 namespace Milano\User\Providers;
+use Database\Seeders\DatabaseSeeder;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
 use Milano\User\Database\Seeds\UsersTableSeeder;
@@ -21,7 +22,7 @@ class UserServiceProvider extends ServiceProvider
         $this->loadJsonTranslationsFrom(__DIR__. "/../Resources/Lang");
         $this->app['router']->pushMiddlewareToGroup('web', StoreUserIp::class);
 
-        \DatabaseSeeder::$seeders[] = UsersTableSeeder::class;
+        DatabaseSeeder::$seeders[] = UsersTableSeeder::class;
         Gate::policy(User::class, UserPolicy::class);
     }
 

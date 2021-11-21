@@ -1,5 +1,5 @@
 <?php
-namespace Milano\Setting\Http\Requests;
+namespace Milano\Setting\Http\Request;
 use Illuminate\Foundation\Http\FormRequest;
 
 class SettingRequest extends FormRequest

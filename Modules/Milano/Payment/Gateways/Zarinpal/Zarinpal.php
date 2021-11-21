@@ -3,7 +3,7 @@ namespace Milano\Payment\Gateways\Zarinpal;
 
 use SoapClient;
 
-class zarinpal
+class Zarinpal
 {
     private function curl_check()
     {

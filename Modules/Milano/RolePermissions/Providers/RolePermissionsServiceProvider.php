@@ -1,12 +1,12 @@
 <?php
 namespace Milano\RolePermissions\Providers;
+use Database\Seeders\DatabaseSeeder;
 use Illuminate\Support\Facades\Gate;
 use Milano\RolePermissions\Database\Seeds\RolePermissionTableSeeder;
 use Milano\RolePermissions\Models\Permission;
 use Illuminate\Support\ServiceProvider;
 use Milano\RolePermissions\Models\Role;
-use Milano\RolePermissions\Policies\RolePermissionPolicy;
-
+use  Milano\RolePermissions\Policies\RolePermissionPolicy;
 
 class RolePermissionsServiceProvider extends ServiceProvider
 {
@@ -19,7 +19,7 @@ class RolePermissionsServiceProvider extends ServiceProvider
         $this->loadMigrationsFrom(__DIR__. '/../Database/Migrations');
         $this->loadViewsFrom(__DIR__. '/../Resources/Views/', 'RolePermissions');
         $this->loadJsonTranslationsFrom(__DIR__ . "/../Resources/Lang");
-        \DatabaseSeeder::$seeders[] = RolePermissionTableSeeder::class;
+        DatabaseSeeder::$seeders[] = RolePermissionTableSeeder::class;
         Gate::policy(Role::class, RolePermissionPolicy::class);
 
     }

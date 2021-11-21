@@ -39,7 +39,7 @@ return [
     |
     */
 
-    'debug' => (bool) env('APP_DEBUG', false),
+    'debug' => (bool)env('APP_DEBUG', false),
 
     /*
     |--------------------------------------------------------------------------
@@ -175,6 +175,27 @@ return [
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
 
+
+
+        Milano\Front\Providers\FrontServiceProvider::class,
+        Milano\Common\Providers\CommonServiceProvider::class,
+        Milano\Payment\Providers\PaymentServiceProvider::class,
+        Milano\User\Providers\UserServiceProvider::class,
+        Milano\RolePermissions\Providers\RolePermissionsServiceProvider::class,
+        Milano\Dashboard\Providers\DashboardServiceProvider::class,
+        Milano\Category\Providers\CategoryServiceProvider::class,
+        Milano\Comment\Providers\CommentServiceProvider::class,
+        Milano\Article\Providers\ArticleServiceProvider::class,
+        Milano\Product\Providers\ProductServiceProvider::class,
+        Milano\Coupon\Providers\CouponServiceProvider::class,
+        Milano\Banner\Providers\BannerServiceProvider::class,
+        Milano\Slideshow\Providers\SlideshowServiceProvider::class,
+        Milano\Ads\Providers\AdsServiceProvider::class,
+        Milano\Setting\Providers\SettingServiceProvider::class,
+        Milano\Cart\Providers\CartServiceProvider::class,
+        Milano\Seller\Providers\SellerServiceProvider::class,
+        Milano\Baner\Providers\BanerServiceProvider::class,
+        Milano\Order\Providers\OrderServiceProvider::class,
     ],
 
     /*

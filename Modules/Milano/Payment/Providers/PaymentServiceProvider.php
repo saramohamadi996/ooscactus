@@ -1,12 +1,13 @@
 <?php
 namespace Milano\Payment\Providers;
 
-//use App\Providers\EventServiceProvider;
+use App\Providers\EventServiceProvider;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
 use Milano\Payment\Gateways\Gateway;
 use Milano\Payment\Gateways\Zarinpal\ZarinpalAdaptor;
 use Milano\RolePermissions\Models\Permission;
+use Milano\User\Http\Middleware\StoreUserIp;
 
 class PaymentServiceProvider extends ServiceProvider
 {
@@ -19,7 +20,7 @@ class PaymentServiceProvider extends ServiceProvider
         Route::middleware("web")->namespace($this->namespace)->group(__DIR__ . "/../Routes/settlement_routes.php");
         $this->loadViewsFrom(__DIR__ . "/../Resources/Views", "Payment");
         $this->loadJsonTranslationsFrom(__DIR__ . "/../Resources/Lang");
-//        $this->app['router']->pushMiddlewareToGroup('web', StoreUserIp::class);
+        $this->app['router']->pushMiddlewareToGroup('web', StoreUserIp::class);
     }
 
     public function boot()

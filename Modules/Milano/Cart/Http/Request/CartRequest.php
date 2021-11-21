@@ -1,5 +1,5 @@
 <?php
-namespace Milano\Cart\Http\Requests;
+namespace Milano\Cart\Http\Request;
 
 use Illuminate\Foundation\Http\FormRequest;
 
