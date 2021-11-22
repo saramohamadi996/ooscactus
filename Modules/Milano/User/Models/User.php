@@ -62,6 +62,14 @@ class User extends Authenticatable implements MustVerifyEmail
         'email_verified_at' => 'datetime',
     ];
 
+    /**
+     * Get the verify code associated with the user.
+     */
+    public function verifyCode()
+    {
+        return $this->hasOne(VerifyCode::class);
+    }
+
     public function products()
     {
         return $this->hasMany(Product::class, 'seller_id');

@@ -10,11 +10,14 @@ class CreateUsersTable extends Migration
     {
         Schema::create('users', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
+            $table->string('first_name');
+            $table->string('last_name');
+            $table->string('is_new');
             $table->string('email')->unique();
-            $table->string('username', 50)->nullable();
             $table->string('mobile', 14)->nullable();
             $table->string('image')->nullable();
+            $table->boolean('is_deleted');
+            $table->boolean('is_blocked');
             $table->string('headline')->nullable();
             $table->text('bio')->nullable();
             $table->string('ip')->nullable();
@@ -24,7 +27,7 @@ class CreateUsersTable extends Migration
             $table->string('shaba', 24)->nullable();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
-            $table->enum('status', \Milano\User\Models\User::$statuses)->default('active');
+            $table->enum('status', Milano\User\Models\User::$statuses)->default('active');
             $table->rememberToken();
             $table->timestamps();
         });
