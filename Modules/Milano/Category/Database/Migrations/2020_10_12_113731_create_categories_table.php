@@ -14,8 +14,8 @@ class CreateCategoriesTable extends Migration
             $table->string('title');
             $table->string('slug');
             $table->timestamps();
-            $table->foreign( 'parent_id')
-                ->references('id')->on('categories')->onDelete( 'SET NULL');
+            $table->foreign( 'parent_id')->references('id')
+                ->on('categories')->onDelete( 'SET NULL');
         });
 
     }

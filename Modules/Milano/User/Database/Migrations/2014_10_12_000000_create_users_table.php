@@ -15,9 +15,9 @@ class CreateUsersTable extends Migration
             $table->string('is_new');
             $table->string('email')->unique();
             $table->string('mobile', 14)->nullable();
+            $table->boolean('is_deleted')->default(false);
+            $table->boolean('is_blocked')->default(false);
             $table->string('image')->nullable();
-            $table->boolean('is_deleted');
-            $table->boolean('is_blocked');
             $table->string('headline')->nullable();
             $table->text('bio')->nullable();
             $table->string('ip')->nullable();

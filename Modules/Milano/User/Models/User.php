@@ -1,9 +1,8 @@
 <?php
+
 namespace Milano\User\Models;
-use Illuminate\Contracts\Auth\MustVerifyEmail;
+
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Notifications\Notifiable;
 use Milano\Cart\Models\Cart;
 use Milano\Coupon\Models\Coupon;
 use Milano\Order\Models\Order;
@@ -13,11 +12,37 @@ use Milano\Product\Models\ImageProduct;
 use Milano\Product\Models\Product;
 use Milano\RolePermissions\Models\Role;
 use Spatie\Permission\Traits\HasRoles;
-class User extends Authenticatable implements MustVerifyEmail
+use Tymon\JWTAuth\Contracts\JWTSubject;
+use Illuminate\Notifications\Notifiable;
+use Illuminate\Foundation\Auth\User as Authenticatable;
+
+class User extends Authenticatable implements JWTSubject
 {
     use Notifiable;
     use HasRoles;
     use HasFactory;
+
+    protected $table = 'users';
+
+    /**
+     * Get the identifier that will be stored in the subject claim of the JWT.
+     *
+     * @return mixed
+     */
+    public function getJWTIdentifier()
+    {
+        return $this->getKey();
+    }
+
+    /**
+     * Return a key value array, containing any custom claims to be added to the JWT.
+     *
+     * @return array
+     */
+    public function getJWTCustomClaims()
+    {
+        return [];
+    }
 
     const STATUS_ACTIVE = "Active";
     const STATUS_INACTIVE = "inactive";
@@ -48,10 +73,9 @@ class User extends Authenticatable implements MustVerifyEmail
         ]
     ];
 
-    protected $table = 'users';
 
     protected $fillable = [
-        'name', 'email', 'password', 'mobile' , 'username'
+        'name', 'email', 'password', 'mobile', 'username'
     ];
 
     protected $hidden = [
@@ -74,29 +98,37 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         return $this->hasMany(Product::class, 'seller_id');
     }
+
     public function images()
     {
-        return $this->belongsTo(ImageProduct::class , 'image_id');
+        return $this->belongsTo(ImageProduct::class, 'image_id');
     }
+
     public function profilePath()
     {
         return $this->username ? route('viewProfile', $this->username)
             : route('viewProfile', 'username');
     }
+
     public function getuserImageAttribute()
     {
-        if($this->image){
-        return '/storage/'. $this->image;
-        }else{
+        if ($this->image) {
+            return '/storage/' . $this->image;
+        } else {
             return url('/img/profile.jpg');
         }
     }
-    public function carts(){
+
+    public function carts()
+    {
         return $this->hasMany(Cart::class);
     }
-    public function order(){
+
+    public function order()
+    {
         return $this->hasMany(Order::class);
     }
+
     public function payments()
     {
         return $this->hasMany(Payment::class, "buyer_id");
@@ -106,8 +138,9 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         return $this->hasMany(Settlement::class);
     }
+
     public function coupons()
     {
-        return $this->morphToMany(Coupon::class , 'couponable');
+        return $this->morphToMany(Coupon::class, 'couponable');
     }
 }

@@ -50,6 +50,7 @@ class CategoryRepo
     }
     public function latestProducts()
     {
-        return Product::where('confirmation_status', Product::CONFIRMATION_STATUS_ACCEPTED)->latest()->take(8)->get();
+        return Product::where('confirmation_status',
+            Product::CONFIRMATION_STATUS_ACCEPTED)->latest()->take(8)->get();
     }
 }
