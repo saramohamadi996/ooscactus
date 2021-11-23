@@ -1,6 +1,6 @@
 <?php
 
-namespace Milano\Payments\Policies;
+namespace Milano\Payment\Policies;
 
 use Illuminate\Auth\Access\HandlesAuthorization;
 use Milano\RolePermissions\Models\Permission;

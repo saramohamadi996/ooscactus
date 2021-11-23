@@ -3,8 +3,10 @@
 namespace Milano\Category\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\RedirectResponse;
-use Milano\Category\Http\Requests\CategoryRequest;
+use Milano\Category\Http\Requests\CategoryStoreRequest;
+use Milano\Category\Http\Requests\CategoryUpdateRequest;
 use Milano\Category\Models\Category;
 use Milano\Category\Repositories\Interfaces\CategoryRepositoryInterface;
 use Illuminate\Contracts\View\View;
@@ -29,6 +31,7 @@ class CategoryController extends Controller
     /**
      * Display a listing of the resource.
      * @return View
+     * @throws AuthorizationException
      */
     public function index(): View
     {
@@ -39,62 +42,62 @@ class CategoryController extends Controller
 
     /**
      * Show the form for editing the specified resource.
-     *
-     * @param int $id
+     * @param int $category_id
      * @return View
+     * @throws AuthorizationException
      */
-    public function edit(int $id): View
+    public function edit(int $category_id): View
     {
-        $category_id = $this->category_repository->findById($id);
-        $category = $this->category_repository->getAll($category_id);
-        return view('Categories::edit', compact('category', 'category'));
+        $this->authorize('edit', Category::class);
+        $category = $this->category_repository->findById($category_id);
+        $categories = $this->category_repository->getAll($category_id);
+        return view('Categories::edit', compact('category', 'categories'));
     }
-
 
     /**
      * Store a newly created resource in storage.
-     * @param CategoryRequest $request
+     * @param CategoryStoreRequest $request
      * @return RedirectResponse
      */
-    public function store(CategoryRequest $request):RedirectResponse
+    public function store(CategoryStoreRequest $request): RedirectResponse
     {
         $input = $request->only('title', 'slug', 'parent_id');
         $result = $this->category_repository->store($input);
-        if (!$result){
+        if (!$result) {
             return redirect()->back()->with('error', 'عملیات ذخیره سازی با شکست مواجه شد.');
         }
         return back()->with('success', 'عملیات ذخیره سازی با موفقیت انجام شد.');
     }
 
-
     /**
      * Update the specified resource in storage.
-     * @param  CategoryRequest $request
-     * @param  int $id
+     * @param int $id
+     * @param CategoryUpdateRequest $request
      * @return RedirectResponse
      */
-    public function update(int $id, CategoryRequest $request):RedirectResponse
+    public function update(int $id, CategoryUpdateRequest $request): RedirectResponse
     {
         $category = $this->category_repository->findById($id);
         $input = $request->only('title', 'slug', 'parent_id');
         $result = $this->category_repository->update($input, $category);
-        if (!$result){
+        if (!$result) {
             return redirect()->back()->with('error', 'عملیات بروزرسانی با شکست مواجه شد.');
         }
-        return redirect()->with('success', 'عملیات بروزرسانی با موفقیت انجام شد.');
+        return redirect()->route('categories.index')->with('success', 'عملیات بروزرسانی با موفقیت انجام شد.');
     }
 
     /**
      * Remove the specified resource from storage.
-     *
      * @param int $id
      * @return RedirectResponse
+     * @throws AuthorizationException
      */
-    public function destroy(int $id):RedirectResponse
+    public function destroy(int $id): RedirectResponse
     {
+        $this->authorize('destroy', Category::class);
         $category = $this->category_repository->findById($id);
         $result = $this->category_repository->delete($category);
-        if (!$result){
+        if (!$result) {
             return redirect()->back()->with('error', 'عملیات حذف با شکست مواجه شد.');
         }
         return redirect()->back()->with('success', 'عملیات حذف با موفقیت شد.');

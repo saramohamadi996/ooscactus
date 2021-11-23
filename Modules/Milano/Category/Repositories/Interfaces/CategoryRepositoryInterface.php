@@ -2,8 +2,9 @@
 
 namespace Milano\Category\Repositories\Interfaces;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Milano\Category\Models\Category;
 
 interface CategoryRepositoryInterface
@@ -21,14 +22,15 @@ interface CategoryRepositoryInterface
 
     /**
      * Get the value from the database.
-     * @return mixed
+     * @param $id
+     * @return Collection|Category[]
      */
-    public function getAll($d): Collection;
+    public function getAll($id): Collection;
 
     /**
      * find by id the record with the given id.
      * @param int $id
-     * @return Category
+     * @return Builder|Category
      */
     public function findById(int $id): Category;
 

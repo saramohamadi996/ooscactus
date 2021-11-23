@@ -6,10 +6,10 @@ use Milano\Category\Repositories\Interfaces\CategoryRepositoryInterface;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\QueryException;
-use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Log;
 use Milano\Category\Models\Category;
 use Milano\Product\Models\Product;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 
 class CategoryRepository implements CategoryRepositoryInterface
 {
@@ -35,22 +35,22 @@ class CategoryRepository implements CategoryRepositoryInterface
 
     /**
      * Get the value from the database.
-     * @return Builder[]|Collection
+     * @param $id
+     * @return Collection|Category[]
      */
-    public function getAll($id): Collection
+    public function getAll($id):Collection
     {
-        return $this->fetchQueryBuilder()->get($id);
-//        return $this->fetchQueryBuilder()->filter(function ($item) use ($id) {
-//            return $item->id != $id;
-//        });
+        return Category::all()->filter(function ($item) use ($id) {
+            return $item->id != $id;
+        });
     }
 
     /**
      * find by id the record with the given id.
      * @param int $id
-     * @return Category
+     * @return Builder|Category
      */
-    public function findById(int $id): Category
+    public function findById(int $id):Category
     {
         return $this->fetchQueryBuilder()->findOrFail($id);
     }

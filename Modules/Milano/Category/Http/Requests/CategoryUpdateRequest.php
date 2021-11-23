@@ -4,7 +4,7 @@ namespace Milano\Category\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class CategoryRequest extends FormRequest
+class CategoryUpdateRequest extends FormRequest
 {
     public function authorize()
     {
@@ -15,7 +15,7 @@ class CategoryRequest extends FormRequest
     {
         return [
             "title"=>'nullable|unique:categories,title|min:3|max:190',
-            "slug" => 'required|min:3|max:190|unique:categories,slug',
+            "slug" => 'nullable|min:3|max:190|unique:categories,slug',
             'parent_id'=> 'nullable|exists:categories,id',
         ];
     }

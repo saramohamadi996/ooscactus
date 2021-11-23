@@ -20,7 +20,7 @@
             }
         },
         xAxis: {
-            {{--categories: [@foreach($dates as $date => $value) '{{ getJalaliFromFormat($date) }}', @endforeach]--}}
+{{--            categories: [@foreach($dates as $date => $value) '{{ getJalaliFromFormat($date) }}', @endforeach]--}}
             categories: [@foreach($dates as $date => $value) '{{$date }}', @endforeach]
         },
         yAxis:{

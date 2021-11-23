@@ -3,11 +3,18 @@
 namespace Milano\Dashboard\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use Illuminate\Contracts\Foundation\Application;
+use Illuminate\Contracts\View\Factory;
+use Illuminate\Contracts\View\View;
 use Milano\Payment\Repositories\PaymentRepo;
 
 class DashboardController extends Controller
 {
-
+    /**
+     * Display a listing of the resource.
+     * @param PaymentRepo $paymentRepo
+     * @return Application|Factory|View
+     */
     public function dashboard(PaymentRepo $paymentRepo)
     {
         $totalSales = $paymentRepo->getUserTotalSuccessAmount(auth()->id());

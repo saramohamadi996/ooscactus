@@ -21,7 +21,7 @@ class CategoryServiceProvider extends ServiceProvider
     }
 
     /**
-     * Define your route bindings.
+     * Display details of menu items in the sidebar, such as name, icon and url.
      */
     public function boot()
     {

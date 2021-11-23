@@ -26,7 +26,8 @@
                                 <td>{{ $category->slug }}</td>
                                 <td>{{ $category->parent }}</td>
                                 <td>
-                                    <a href="" onclick=" deleteItem(event, '{{route('categories.destroy',$category->id)}}') "class="item-delete mlg-15" title="حذف"></a>
+                                    <a href="" onclick=" deleteItem(event, '{{route('categories.destroy',$category->id)}}')
+                                        "class="item-delete mlg-15" title="حذف"></a>
                                    <a href="{{route('categories.edit',$category->id)}}" class="item-edit " title="ویرایش"></a>
                                 </td>
                             </tr>

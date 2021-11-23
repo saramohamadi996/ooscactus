@@ -30,8 +30,11 @@
                                     </ul>
                                 </td>
                                 <td>
-                                    <a href="" onclick="deleteItem(event, '{{ route('role-permissions.destroy', $role->id) }}')" class="item-delete mlg-15" title="حذف"></a>
-                                    <a href="{{ route('role-permissions.edit',  $role->id) }}" class="item-edit " title="ویرایش"></a>
+                                    <a href=""
+                                       onclick="deleteItem(event, '{{ route('role-permissions.destroy', $role->id) }}')"
+                                       class="item-delete mlg-15" title="حذف"></a>
+                                    <a href="{{ route('role-permissions.edit',  $role->id) }}" class="item-edit "
+                                       title="ویرایش"></a>
 
                                 </td>
                             </tr>

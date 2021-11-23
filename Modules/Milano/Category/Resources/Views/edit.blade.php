@@ -12,15 +12,16 @@
                 @csrf
                 @method('patch')
 
-                <x-input type="text" name="title" required placeholder="نام دسته بندی" value="{{ $category->title}}"/>
-                <x-input type="text" name="slug" required placeholder="نام پیوند(مفید برای سئو)" value="{{ $category->slug}}"/>
+                <x-input type="text" name="title" placeholder="نام دسته بندی" value="{{ $category->title}}"/>
+                <x-input type="text" name="slug" placeholder="نام پیوند(مفید برای سئو)" value="{{ $category->slug}}"/>
 
 
                 <p class="box__title margin-bottom-15">انتخاب دسته پدر</p>
                 <select name="parent_id" id="parent_id">
                     <option value="">ندارد</option>
                     @foreach($categories as $categoryItem)
-                        <option value="{{ $categoryItem->id }}"  @if($categoryItem->id == $category->parent_id) selected @endif>{{ $categoryItem->title }}</option>
+                        <option value="{{ $categoryItem->id }}"  @if($categoryItem->id == $category->parent_id)
+                        selected @endif>{{ $categoryItem->title }}</option>
                     @endforeach
                 </select>
                 <button class="btn btn-webamooz_net">بروزرسانی</button>

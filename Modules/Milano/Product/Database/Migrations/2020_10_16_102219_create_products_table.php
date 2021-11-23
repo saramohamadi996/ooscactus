@@ -2,6 +2,7 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use Milano\Product\Models\Product;
 
 class CreateProductsTable extends Migration
 
@@ -21,12 +22,14 @@ class CreateProductsTable extends Migration
             $table->string('seller_share', 5);
             $table->integer('stock');
             $table->string('code_product')->unique();
-            $table->enum('status',\Milano\Product\Models\Product::$statuses);
-            $table->enum('confirmation_status',\Milano\Product\Models\Product::$confirmationStatuses)->default('pending');
+            $table->enum('status',Product::$statuses);
+            $table->enum('confirmation_status',Product::$confirmationStatuses)->default('pending');
             $table->longText('body')->nullable();
             $table->timestamps();
-            $table->foreign('category_id')->references('id')->on('categories')->onDelete('SET NULL');
-            $table->foreign('seller_id')->references('id')->on('users')->onDelete('CASCADE');
+            $table->foreign('category_id')->references('id')
+                ->on('categories')->onDelete('SET NULL');
+            $table->foreign('seller_id')->references('id')
+                ->on('users')->onDelete('CASCADE');
         });
         Schema::create('image_products', function (Blueprint $table) {
             $table->id();
@@ -34,7 +37,8 @@ class CreateProductsTable extends Migration
             $table->string('src');
             $table->integer('main_image');
             $table->timestamps();
-            $table->foreign('product_id')->references('id')->on('products')->onDelete('CASCADE');
+            $table->foreign('product_id')->references('id')
+                ->on('products')->onDelete('CASCADE');
         });
     }
 

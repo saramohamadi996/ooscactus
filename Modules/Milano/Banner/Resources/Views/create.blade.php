@@ -3,8 +3,30 @@
     <li><a href="{{ route('banners.index') }}" title=" بنرها">بنرها</a></li>
     <li><a href="#" title="بنر جدید">بنر جدید</a></li>
 @endsection
+
+@section('title')
+    <?php const pageTitle = 'ایجاد نوع بنر جدید'; const pageIcon = ''; ?>
+@endsection
+
 @section('content')
-<div class="main-content padding-0">
+
+    @if ( count($errors) > 0)
+        @foreach ($errors->all() as $error)
+            <li>{{ $error }}</li>
+        @endforeach
+    @endif
+    @if (session()->has('success'))
+        <div class="alert alert-success">
+            {{ session()->get('success') }}
+        </div>
+    @endif
+    @if ( session()->has('error'))
+        <div class="alert-danger">
+            {{ session()->get('error') }}
+        </div>
+    @endif
+
+    <div class="main-content padding-0">
     <p class="box__title">ایجاد بنر جدید</p>
     <div class="row no-gutters bg-white">
         <div class="col-12">
@@ -25,3 +47,5 @@
     </div>
 </div>
 @endsection
+
+

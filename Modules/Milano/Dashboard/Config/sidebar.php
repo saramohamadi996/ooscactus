@@ -1,4 +1,7 @@
 <?php
+/**
+ * Configure Sidebar items
+ */
 return [
     'items' => [
         'dashboard' => [],

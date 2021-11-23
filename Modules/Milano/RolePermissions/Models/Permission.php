@@ -3,6 +3,10 @@
 namespace Milano\RolePermissions\Models;
 class Permission extends \Spatie\Permission\Models\Permission
 {
+    /**
+     * Constants that deal only with the database.
+     */
+    const PERMISSION_SUPER_ADMIN  = 'super admin';
     const PERMISSION_MANAGE_BANNERS = 'manage banners';
     const PERMISSION_MANAGE_USERS = 'manage users';
     const PERMISSION_MANAGE_ROLE_PERMISSIONS = 'manage role_permissions';
@@ -39,5 +43,4 @@ class Permission extends \Spatie\Permission\Models\Permission
         self::PERMISSION_MANAGE_SELLERS,
         self::PERMISSION_MANAGE_PAYMENTS,
     ];
-    const PERMISSION_SUPER_ADMIN  = 'super admin';
 }

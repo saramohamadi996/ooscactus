@@ -52,6 +52,7 @@ $app->singleton(
 |
 */
 $app->register(Milano\Category\Providers\CategoryBindServiceProvider::class);
+$app->register(Milano\RolePermissions\Providers\RolePermissionBindServiceProvider::class);
 
 
 /*
