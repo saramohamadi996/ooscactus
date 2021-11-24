@@ -7,7 +7,6 @@ use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\RedirectResponse;
 use Milano\Category\Http\Requests\CategoryStoreRequest;
 use Milano\Category\Http\Requests\CategoryUpdateRequest;
-use Milano\Category\Models\Category;
 use Milano\Category\Repositories\Interfaces\CategoryRepositoryInterface;
 use Illuminate\Contracts\View\View;
 
@@ -35,8 +34,8 @@ class CategoryController extends Controller
      */
     public function index(): View
     {
-        $this->authorize('manage', Category::class);
         $categories = $this->category_repository->paginate();
+        $this->authorize('manage', $categories);
         return view('Categories::index', compact('categories'));
     }
 
@@ -48,9 +47,10 @@ class CategoryController extends Controller
      */
     public function edit(int $category_id): View
     {
-        $this->authorize('edit', Category::class);
         $category = $this->category_repository->findById($category_id);
         $categories = $this->category_repository->getAll($category_id);
+        $this->authorize('edit', $category);
+
         return view('Categories::edit', compact('category', 'categories'));
     }
 
@@ -94,8 +94,8 @@ class CategoryController extends Controller
      */
     public function destroy(int $id): RedirectResponse
     {
-        $this->authorize('destroy', Category::class);
         $category = $this->category_repository->findById($id);
+        $this->authorize('destroy', $category);
         $result = $this->category_repository->delete($category);
         if (!$result) {
             return redirect()->back()->with('error', 'عملیات حذف با شکست مواجه شد.');

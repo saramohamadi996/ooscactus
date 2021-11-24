@@ -20,10 +20,7 @@ class ProductRepo
     public function all(){
         return Product::all();
     }
-//    public function getProducts()
-//    {
-//        return Product::all();
-//    }
+
     public function getSellers($userId)
     {
         return Product::where('seller_id' , $userId)->get();
@@ -62,7 +59,7 @@ class ProductRepo
     {
         return Product::where('seller_id', $id)->get();
     }
-    public function store($values, $images)
+    public function store($values)
     {
         $images = [];
         if ($values->hasFile('images')) {
@@ -128,7 +125,7 @@ class ProductRepo
         ]);
     return $product;
     }
-    public function updateConfirmationStatus($id)
+    public function updateConfirmationStatus($product)
     {
          $product->update(['confirmation_status' => Product::CONFIRMATION_STATUS_ACCEPTED]);return $product;
     }

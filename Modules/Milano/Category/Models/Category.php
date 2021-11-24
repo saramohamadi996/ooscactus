@@ -22,7 +22,7 @@ use Milano\Product\Models\Product;
 class Category extends Model
 {
     /**
-     * define Category's table
+     * define Category's table.
      * @var string
      */
     protected $table = 'categories';
@@ -33,7 +33,7 @@ class Category extends Model
      */
     public $timestamps = false;
 
-    /**define Category's fallible fields
+    /**define Category's fallible fields.
      * @var string[]
      */
     protected $fillable = ['title', 'slug'];

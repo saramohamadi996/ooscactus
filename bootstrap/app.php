@@ -51,9 +51,6 @@ $app->singleton(
 | totally optional, so you are not required to uncomment this line.
 |
 */
-$app->register(Milano\Category\Providers\CategoryBindServiceProvider::class);
-$app->register(Milano\RolePermissions\Providers\RolePermissionBindServiceProvider::class);
-
 
 /*
 |--------------------------------------------------------------------------

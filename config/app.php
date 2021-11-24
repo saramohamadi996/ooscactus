@@ -178,7 +178,11 @@ return [
         App\Providers\RouteServiceProvider::class,
 
 
-
+        Milano\RolePermissions\Providers\RolePermissionBindServiceProvider::class,
+        Milano\User\Providers\UserBindServiceProvider::class,
+        Milano\Product\Providers\ProductBindServiceProvider::class,
+        Milano\Category\Providers\CategoryBindServiceProvider::class,
+        Milano\Media\Providers\MediaServiceProvider::class,
         Milano\Front\Providers\FrontServiceProvider::class,
         Milano\Common\Providers\CommonServiceProvider::class,
         Milano\Payment\Providers\PaymentServiceProvider::class,

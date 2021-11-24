@@ -2,6 +2,7 @@
 
 namespace Milano\Category\Repositories;
 
+use Illuminate\Support\Str;
 use Milano\Category\Repositories\Interfaces\CategoryRepositoryInterface;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
@@ -14,8 +15,7 @@ use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 class CategoryRepository implements CategoryRepositoryInterface
 {
     /**
-     * fetch query builder indicator.
-     *
+     * fetch query builder categories.
      * @return Builder|mixed
      */
     private function fetchQueryBuilder(): Builder
@@ -24,7 +24,7 @@ class CategoryRepository implements CategoryRepositoryInterface
     }
 
     /**
-     * paginate banner types.
+     * paginate categories.
      * @param int $perpage
      * @return LengthAwarePaginator
      */
@@ -64,7 +64,7 @@ class CategoryRepository implements CategoryRepositoryInterface
     {
         $category = new Category();
         $category->title = $value['title'];
-        $category->slug = $value['slug'];
+        $category->slug = Str::slug($value['slug']);
         $category->parent_id = $value['parent_id'];
         try {
             $category->save();
