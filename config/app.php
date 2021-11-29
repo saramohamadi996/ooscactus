@@ -163,6 +163,7 @@ return [
         Illuminate\View\ViewServiceProvider::class,
         Spatie\Permission\PermissionServiceProvider::class,
         Tymon\JWTAuth\Providers\LaravelServiceProvider::class,
+        Kavenegar\LaravelNotification\KavenegarServiceProvider::class,
 
         /*
          * Package Service Providers...
@@ -178,22 +179,23 @@ return [
         App\Providers\RouteServiceProvider::class,
 
 
+        Milano\Ticket\Providers\TicketServiceProvider::class,
+        Milano\Discount\Providers\EventServiceProvider::class,
+        Milano\Discount\Providers\DiscountServiceProvider::class,
         Milano\RolePermissions\Providers\RolePermissionBindServiceProvider::class,
         Milano\User\Providers\UserBindServiceProvider::class,
         Milano\Product\Providers\ProductBindServiceProvider::class,
         Milano\Category\Providers\CategoryBindServiceProvider::class,
-        Milano\Media\Providers\MediaServiceProvider::class,
         Milano\Front\Providers\FrontServiceProvider::class,
+        Milano\Comment\Providers\CommentServiceProvider::class,
         Milano\Common\Providers\CommonServiceProvider::class,
         Milano\Payment\Providers\PaymentServiceProvider::class,
         Milano\User\Providers\UserServiceProvider::class,
         Milano\RolePermissions\Providers\RolePermissionsServiceProvider::class,
         Milano\Dashboard\Providers\DashboardServiceProvider::class,
         Milano\Category\Providers\CategoryServiceProvider::class,
-        Milano\Comment\Providers\CommentServiceProvider::class,
         Milano\Article\Providers\ArticleServiceProvider::class,
         Milano\Product\Providers\ProductServiceProvider::class,
-        Milano\Coupon\Providers\CouponServiceProvider::class,
         Milano\Banner\Providers\BannerServiceProvider::class,
         Milano\Slideshow\Providers\SlideshowServiceProvider::class,
         Milano\Ads\Providers\AdsServiceProvider::class,

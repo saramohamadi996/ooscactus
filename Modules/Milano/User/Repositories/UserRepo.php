@@ -1,6 +1,7 @@
 <?php
 namespace Milano\User\Repositories;
 use Illuminate\Support\Facades\Storage;
+use Milano\Product\Models\Product;
 use Milano\RolePermissions\Models\Permission;
 use Milano\User\Models\User;
 

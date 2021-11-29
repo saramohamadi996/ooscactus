@@ -14,15 +14,32 @@
 
             <div class="bg-white padding-20">
                 <div class="t-header-search">
-                    <form action="">
+
+                    <form action="{{route('products.index')}}" method="get" class="">
+                    @csrf
                         <div class="t-header-searchbox font-size-13">
                             <input type="text" class="text search-input__box font-size-13" placeholder="جستجوی محصول">
                             <div class="t-header-search-content">
-                                <input type="text"  class="text" name="title" value="{{ request("title") }}" placeholder="نام محصول">
-                                <input type="text"  class="text" name="code_product" value="{{ request("code_product") }}" placeholder="کد محصول">
-                                <input type="text"  class="text" name="priority" value="{{ request("priority") }}" placeholder="ردیف">
-                                <input type="text"  class="text" name="price" value="{{ request("price") }}" placeholder="قیمت">
-                                <button type="submit" class="btn btn-webamooz_net" >جستجو</button>
+
+                                <select name="seller_id">
+                                    <option value="">انتخاب فروشنده محصول</option>
+                                    @foreach($categories as $category)
+                                        <option value="{{ $category->id }}">{{ $category->title }}</option>
+                                    @endforeach
+                                </select>
+
+                                <select name="seller_id">
+                                    <option value="">انتخاب فروشنده محصول</option>
+                                    @foreach($sellers as $seller)
+                                        <option value="{{ $seller->id }}">{{ $seller->name }}</option>
+                                    @endforeach
+                                </select>
+
+                                <input type="text" class="text" name="title" placeholder="نام محصول">
+                                <input type="text" class="text" name="code_product" placeholder="کد محصول">
+                                <input type="text" class="text" name="priority" value="{{ request("priority") }}" placeholder="ردیف">
+                                <input type="text" class="text" name="price" value="{{ request("price") }}" placeholder="قیمت">
+                                <button type="submit" class="btn btn-webamooz_net" id="update-profile" >جستجو</button>
                             </div>
                         </div>
                     </form>
@@ -38,47 +55,57 @@
                         <th>عنوان</th>
                         <th>فروشنده</th>
                         <th>قیمت</th>
-                        <th>برچسب ها</th>
-                        <th>موجودی </th>
+{{--                        <th>برچسب ها</th>--}}
+                        <th>موجودی</th>
                         <th>کد محصول</th>
+                        @can(Milano\RolePermissions\Models\Permission::PERMISSION_MANAGE_PRODUCTS)
                         <th>وضعیت</th>
-                        <th>takhfif</th>
                         <th>وضعیت تایید</th>
                         <th>عملیات</th>
+                        @endcan
                     </tr>
                     </thead>
                     <tbody>
                     @foreach($products as $product)
                         <tr role="row" class="">
                             <td><a href="">{{ $product->priority }}</a></td>
-                            <td width="80"><img src="{{asset('/storage/' . $product->image)}}"  width="80"></td>
+                            <td width="80"><img src="{{asset('/storage/' . $product->image)}}" width="80"></td>
                             <td><a href="">{{ $product->title }}</a></td>
                             <td><a href="">{{ $product->seller->name }}</a></td>
                             <td>{{ $product->price }} (تومان)</td>
-                            <td><a href="">{{$product->tag_name}}</a></td>
+{{--                            <td><a href="">{{$product->tag_name}}</a></td>--}}
                             <td><a href="">{{$product->stock }}</a></td>
                             <td><a href="">{{$product->code_product }}</a></td>
-                            <td class="status">@lang($product->status)</td>
-                            <td>
-                                <form method="post" action="{{ route("products.coupon") }}">
-                                    @csrf
-                                    <input type="hidden" name="id" value="{{ $product->id }}">
-                                    <input name="coupon" type="number" value="{{ $product->coupon ?? null }}">
-                                    <button type="submit">اعمال تخفیف</button>
-                                </form>
-                            </td>
-                            <td class="confirmation_status">@lang($product->confirmation_status)</td>
-                            <td>
-                                @can(\Milano\RolePermissions\Models\Permission::PERMISSION_MANAGE_PRODUCTS)
-                                    <a href="" onclick="deleteItem(event, '{{ route('products.destroy', $product->id) }}')"
-                                       class="item-delete mlg-15" title="حذف"></a>
-                                    <a href="" onclick="updateConfirmationStatus(event, '{{ route('products.accept', $product->id) }}',
-                                        'آیا از تایید این آیتم اطمینان دارید؟' , 'تایید شده')" class="item-confirm mlg-15" title="تایید"></a>
-                                    <a href="" onclick="updateConfirmationStatus(event, '{{ route('products.reject', $product->id) }}',
-                                        'آیا از رد این آیتم اطمینان دارید؟' ,'رد شده')" class="item-reject mlg-15" title="رد"></a>
-                                @endcan
-                                <a href="{{ route('products.edit',  $product->id) }}" class="item-edit mlg-15 " title="ویرایش"></a>
-                            </td>
+                            @can(Milano\RolePermissions\Models\Permission::PERMISSION_MANAGE_PRODUCTS)
+                                <td><a name="status" class=""
+                                       @if($product->status == 1)href="{{route('products.status',[$product->id])}}"
+                                       disabled @endif
+                                       href="{{route('products.status',[$product->id])}}">
+                                        @if($product->status == 1) موجود
+                                        @else ناموجود
+                                        @endif
+                                    </a>
+                                </td>
+                                <td>
+                                    <a name="is_enable" class=""
+                                       @if($product->is_enabled == 1)href="{{route('products.toggle',[$product->id])}}"
+                                       disabled @endif
+                                       href="{{route('products.toggle',[$product->id])}}">
+                                        @if($product->is_enabled == 1) تایید شده
+                                        @else تایید نشده
+                                        @endif
+                                    </a>
+                                </td>
+
+                                <td>
+                                    <a class="item-delete mlg-15" title="حذف" href=""
+                                       onclick="deleteItem(event, '{{ route('products.destroy', $product->id)}}')">
+                                    </a>
+                                    <a class="item-edit mlg-15 " title="ویرایش"
+                                       href="{{ route('products.edit',  $product->id) }}">
+                                    </a>
+                                </td>
+                            @endcan
                         </tr>
                     @endforeach
                     </tbody>
@@ -87,3 +114,12 @@
         </div>
     </div>
 @endsection
+
+
+{{--<a  name="is_enable" class="btn btn-primary"--}}
+{{--    @if($product->is_enabled == 1)href="{{route('products.toggle',[$product->id])}}" disabled--}}
+{{--    @endif  href="{{route('products.toggle',[$product->id])}}">--}}
+{{--    @if($product->is_enabled == 1) غیرفعالسازی(بنر فعال است)--}}
+{{--    @else فعالسازی(بنر غیر فعال است)--}}
+{{--    @endif--}}
+{{--</a>--}}

@@ -5,10 +5,13 @@ namespace Milano\Product\Repositories\Interfaces;
 use Illuminate\Contracts\Pagination\Paginator;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Model;
 use Milano\Product\Models\Product;
 
 interface ProductRepositoryInterface
 {
+    public function getProductsBySellerId(int $id);
+
     /**
      * paginate products.
      * @param array $input
@@ -19,50 +22,36 @@ interface ProductRepositoryInterface
 
     /**
      * find by id the record with the given id.
-     * @param $id
      * @return Collection
      */
     public function getAll(): Collection;
 
     /**
      * find by id the record with the given id.
-     * @param int $id
-     * @return Builder|Product
+     * @return Builder|Builder[]|Collection|Model|Product
      */
     public function findById(int $id): Product;
 
     /**
      * Store a newly created resource in storage.
      * @param array $value
+     * @param $images
      * @return bool
      */
-    public function store(array $value): bool;
+    public function store(array $value, $images):bool;
 
     /**
      * Update the specified resource in storage.
-     * @param array $value
-     * @param Product $product
+     * @param array $values
+     * @param int $id
      * @return bool
      */
-    public function update(array $value, Product $product): bool;
+    public function update(array $values, int $id):bool;
 
     /**
      * Remove the specified resource from storage.
      * @param Product $product
      * @return bool
-     * @throws \Exception
      */
     public function delete(Product $product): bool;
-
-    public function updateConfirmationStatus($product);
-
-    public function latestProducts();
-
-    public function accept($id);
-
-    public function reject($id);
-
-    public function getProductsBySellerId(?int $id);
-
-    public function getSellers($userId);
 }

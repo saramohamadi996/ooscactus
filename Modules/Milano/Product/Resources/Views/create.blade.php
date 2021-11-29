@@ -1,4 +1,3 @@
-
 @extends('Dashboard::maste')
 @section('breadcrumb')
     <li><a href="{{ route('products.index') }}" title="محصول ها">محصولات</a></li>
@@ -11,50 +10,31 @@
             <form action="{{ route('products.store') }}" class="padding-30" method="post" enctype="multipart/form-data">
                 @csrf
                 <div class="d-flex multi-text">
-                <x-input name="title" placeholder="عنوان محصول" type="text"  required/>
-                <x-input type="text" name="slug" placeholder="نام پیوند(مفید برای سئو)" required/>
+                    <x-input name="title" placeholder="عنوان محصول" type="text"/>
+                    <x-input type="text" name="slug" placeholder="نام پیوند(مفید برای سئو)"/>
                 </div>
-                <x-input name="meta_description" placeholder="توضیح مختصر (مفید برای سئو) " type="text" required/>
+                <x-input name="meta_description" placeholder="توضیح مختصر (مفید برای سئو) " type="text"/>
 
                 <div class="d-flex multi-text">
                     <x-input type="number" class="text-left mlg-15" name="priority" placeholder="ردیف محصول"/>
-                    <x-input type="number" placeholder="مبلغ محصول" name="price" class="text-left" required/>
-                    <x-input type="number" placeholder="درصد فروشنده" name="seller_share" class="text-left" required/>
-                    <x-input type="number" placeholder="موجودی انبار " name="stock" class="text-left" required/>
-                    <x-input type="text" placeholder="کد محصول" name="code_product" class="text-left" required/>
+                    <x-input type="number" placeholder="مبلغ محصول" name="price" class="text-left"/>
+                    <x-input type="number" placeholder="درصد فروشنده" name="seller_share" class="text-left"/>
+                    <x-input type="number" placeholder="موجودی انبار " name="stock" class="text-left"/>
+                    <x-input type="text" placeholder="کد محصول" name="code_product" class="text-left"/>
                 </div>
 
-{{--                <ul class="tags">--}}
-
-{{--                    <li class="addedTag">dsfsdf<span class="tagRemove" onclick="$(this).parent().remove();">x</span>--}}
-{{--                        <input type="hidden" value="dsfsdf" name="tags[]"></li>--}}
-{{--                    <li class="addedTag">dsfsdf<span class="tagRemove" onclick="$(this).parent().remove();">x</span>--}}
-{{--                        <input type="hidden" value="dsfsdf" name="tags[]"></li>--}}
-{{--                    <li class="tagAdd taglist">--}}
-{{--                        <input type="text" id="search-field">--}}
-{{--                    </li>--}}
-{{--                </ul>--}}
-
-                <tag-select name="tags">
+                <x-tag-select name="tags"/>
 
                 <div class="d-flex multi-text">
-                <select name="seller_id">
-                    <option value="">انتخاب فروشنده محصول</option>
-                    @foreach($sellers as $seller)
-                        <option value="{{ $seller->id }}" @if($seller->id == old('seller_id')) selected @endif>{{ $seller->name }}</option>
-                    @endforeach
-                </select>
+                    <select name="seller_id">
+                        <option value="">انتخاب فروشنده محصول</option>
+                        @foreach($sellers as $seller)
+                            <option value="{{ $seller->id }}"
+                                    @if($seller->id == old('seller_id')) selected @endif>{{ $seller->name }}</option>
+                        @endforeach
+                    </select>
 
-                <x-select name="status" required>
-                    <option value="">وضعیت محصول</option>
-                    @foreach(\Milano\Product\Models\Product::$statuses as $status)
-                        <option value="{{ $status }}"
-                                @if($status == old('status')) selected @endif>
-                            @lang($status)</option>
-                    @endforeach
-                </x-select>
-
-                    <x-select name="category_id" required>
+                    <x-select name="category_id">
                         <option value="">دسته بندی</option>
                         @foreach($categories  as $category)
                             <option value="{{ $category->id }}"
@@ -64,7 +44,7 @@
                     </x-select>
 
                 </div>
-                <input type="file" name="images[]" required  multiple placeholder="تصویر محصول">
+                <input type="file" name="images[]" multiple placeholder="تصویر محصول">
                 <br>
                 <textarea id="mytextarea" name="body"></textarea><br>
                 <button class="btn btn-webamooz_net">ایجاد محصول</button>

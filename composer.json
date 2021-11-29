@@ -15,7 +15,8 @@
         "livewire/livewire": "^2.7",
         "morilog/jalali": "^3.2",
         "spatie/laravel-permission": "^5.4",
-        "tymon/jwt-auth": "^1.0"
+        "tymon/jwt-auth": "^1.0",
+        "kavenegar/laravel-notification": "^1.0"
     },
     "require-dev": {
         "facade/ignition": "^2.5",
@@ -37,7 +38,6 @@
             "Milano\\RolePermissions\\": "Modules/Milano/RolePermissions/",
             "Milano\\User\\": "Modules/Milano/User/",
             "Milano\\Article\\": "Modules/Milano/Article/",
-            "Milano\\Coupon\\": "Modules/Milano/Coupon",
             "Milano\\Comment\\": "Modules/Milano/Comment/",
             "Milano\\Banner\\": "Modules/Milano/Banner",
             "Milano\\Slideshow\\": "Modules/Milano/Slideshow",
@@ -50,7 +50,8 @@
             "Milano\\Payment\\": "Modules/Milano/Payment",
             "Milano\\Common\\": "Modules/Milano/Common",
             "Milano\\Front\\": "Modules/Milano/Front",
-            "Milano\\Media\\": "Modules/Milano/Media"
+            "Milano\\Discount\\": "Modules/Milano/Discount",
+            "Milano\\Ticket\\": "Modules/Milano/Ticket"
         }
     },
     "autoload-dev": {

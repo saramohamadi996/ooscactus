@@ -7,6 +7,9 @@
     <x-input type="text" name="title"  placeholder="نام دسته بندی" required/>
     <x-input type="text" name="slug"  placeholder="نام پیوند(مفید برای سئو)" required/>
 
+    <input type="file" name="image" oninvalid="this.setCustomValidity('فیلد تصاویر بنر الزامی است')" multiple placeholder="تصویر بنر">
+
+
     <p class="box__title margin-bottom-15">انتخاب والد</p>
     <x-select name="parent_id" id="parent_id">
         <option value="">ندارد</option>

@@ -1,21 +1,26 @@
 <?php
+
 namespace Milano\Comment\Providers;
-use Illuminate\Support\Facades\Gate;
-use \Illuminate\Support\ServiceProvider;
-use Milano\Comment\Models\Comment;
 use Milano\Comment\Policies\CommentPolicy;
+use Milano\Comment\Models\Comment;
 use Milano\RolePermissions\Models\Permission;
+use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Route;
+use Illuminate\Support\ServiceProvider;
 
 class CommentServiceProvider extends ServiceProvider
 {
+    protected $namespace = "Milano\Comment\Http\Controllers";
     public function register()
     {
-        $this->loadRoutesFrom(__DIR__. '/../Routes/comments_routes.php');
-        $this->loadViewsFrom(__DIR__. '/../Resources/Views', 'Comments');
-        $this->loadMigrationsFrom(__DIR__. '/../Database/Migrations');
-        $this->loadJsonTranslationsFrom(__DIR__. '/../Resources/Lang');
-        $this->loadTranslationsFrom(__DIR__. '/../Resources/Lang/', "Comments");
-        Gate::policy(Comment::class,CommentPolicy::class);
+        $this->loadMigrationsFrom(__DIR__ . "/../Database/Migrations");
+        $this->loadViewsFrom(__DIR__ . "/../Resources/Views", "Comments");
+        Route::middleware(['web', 'auth'])
+            ->namespace($this->namespace)
+            ->group(__DIR__ . "/../Routes/comments_routes.php");
+        $this->loadJsonTranslationsFrom(__DIR__ . "/../Resources/Lang");
+
+        Gate::policy(Comment::class, CommentPolicy::class);
     }
 
     public function boot()
@@ -24,8 +29,7 @@ class CommentServiceProvider extends ServiceProvider
             "icon" => "i-comments",
             "title" => "نظرات",
             "url" => route('comments.index'),
-        'permission'=>Permission::PERMISSION_MANAGE_COMMENTS,
+            "permission" => [Permission::PERMISSION_MANAGE_COMMENTS, Permission::PERMISSION_SELL]
         ]);
     }
-
 }

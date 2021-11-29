@@ -1,5 +1,5 @@
 {
-    "accepted" : "تایید شده",
-    "rejected" : "رد شده",
-    "pending" : "درحال انتظار"
+    "approved": "تایید شده",
+    "new": "جدید",
+    "rejected": "رد شده"
 }

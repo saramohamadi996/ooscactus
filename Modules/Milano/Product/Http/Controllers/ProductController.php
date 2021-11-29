@@ -11,11 +11,13 @@ use Illuminate\Database\QueryException;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 use Milano\Category\Repositories\Interfaces\CategoryRepositoryInterface;
-use Milano\Media\Services\MediaFileService;
+use Milano\Common\Responses\AjaxResponses;
 use Milano\Product\Http\Requests\ProductAllRequest;
 use Milano\Product\Http\Requests\ProductStoreRequest;
 use Milano\Product\Http\Requests\ProductUpdateRequest;
+use Milano\Product\Models\Product;
 use Milano\Product\Repositories\Interfaces\ProductRepositoryInterface;
 use Milano\User\Repositories\Interfaces\UserRepositoryInterface;
 
@@ -62,10 +64,13 @@ class ProductController extends Controller
      */
     public function index(ProductAllRequest $request)
     {
+        $id = [];
         $input = $request->only(['title', 'priority', 'price', 'code_product', 'seller_id', 'category_id',]);
         $products = $this->product_repository->paginate($input);
+        $sellers = $this->user_repository->getSellers();
+        $categories = $this->category_repository->getAll($id);
         $this->authorize('index', $products);
-        return view('Products::index', compact('products'));
+        return view('Products::index', compact('products', 'categories','sellers' ));
     }
 
     /**
@@ -81,7 +86,7 @@ class ProductController extends Controller
         $categories = $this->category_repository->getAll($id);
         $this->authorize('edit', $product);
         return view('Products::edit', compact(
-            'product', 'sellers', 'categories', 'product'));
+            'product', 'sellers', 'categories'));
     }
 
     /**
@@ -100,39 +105,27 @@ class ProductController extends Controller
         return view('Products::create', compact('categories', 'sellers'));
     }
 
-    /**
-     * Store a newly created resource in storage.
-     * @param ProductStoreRequest $request
-     * @return \Illuminate\Http\RedirectResponse
-     */
-    public function store(ProductStoreRequest $request): RedirectResponse
+    public function store(ProductStoreRequest $request)
     {
+        $images = [];
         $input = $request->only('seller_id', 'category_id', 'title', 'meta_description', 'slug', 'priority',
-            'price', 'seller_share', 'body', 'image', 'stock', 'confirmation_status');
-        dd($request->image);
+            'price', 'seller_share', 'body', 'image', 'stock', 'code_product', 'is_enabled');
 
-        $request->request->add(['image' => MediaFileService::publicUpload($request->file('image'))->id]);
-
-//        if ($request->has('image')) {
-//            try {
-//                $input['image'] = $request->file('image')->store('product', 'public');
-//            } catch (QueryException $queryException) {
-//                Log::error($queryException->getMessage());
-//            }
-//        }
-        $result = $this->product_repository->store($input);
-        if (!$result) {
-            return redirect()->back()->with('error', 'عملیات ذخیره سازی با شکست مواجه شد.');
+        if ($request->hasFile('images')) {
+            try {
+                foreach ($request->images as $image) {
+                    $images[] = $image->store("photos/product/", 'public');
+                }
+            } catch (QueryException | \Exception $ex) {
+                Log::error($ex->getMessage());
+            }
         }
-        return redirect()->route('products.index')->with('success', 'عملیات ذخیره سازی با موفقیت انجام شد.');
+        $result = $this->product_repository->store($input, $images);
+        if (!$result) {
+            return redirect()->back()->with('error', 'ایجاد محصول با مشکل مواجه شد');
+        }
+        return redirect()->route('products.index')->with('success', 'محصول جدید با موفقیت ایجاد شد');
     }
-
-//    public function store(CourseRequest $request, CourseRepo $courseRepo)
-//    {
-//        $request->request->add(['banner_id' => MediaFileService::publicUpload($request->file('image'))->id]);
-//        $courseRepo->store($request);
-//        return redirect()->route('courses.index');
-//    }
 
     /**
      * Update the specified resource in storage.
@@ -141,28 +134,82 @@ class ProductController extends Controller
      * @return RedirectResponse
      * @throws AuthorizationException
      */
-    public function update(int $product, ProductUpdateRequest $request)
+    public function update($id, Request $request)
     {
-//        $product =  $this->product_repository->findById($id);
+        $product = $this->product_repository->findById($id);
         $input = $request->only('seller_id', 'category_id', 'title', 'meta_description', 'slug', 'priority',
-            'price', 'seller_share', 'body', 'image', 'stock', 'code_product', 'confirmation_status');
-        $this->authorize('edit', $product);
-
-        $result = $this->product_repository->update($input);
-        if (!$result) {
-            return redirect()->back()->with('error', 'عملیات بروزرسانی با شکست مواجه شد.');
+            'price', 'seller_share', 'body', 'image', 'stock', 'code_product', 'is_enabled');
+        if ($request->hasFile('images')) {
+            try {
+                foreach ($request->images as $image) {
+                    $product->images()->create([
+                        'src' => $image->store("photos/Product/", 'public'),
+                        'main_image' => 0
+                    ]);
+                }
+            } catch (QueryException | \Exception $ex) {
+                Log::error($ex->getMessage());
+            }
         }
-        return redirect()->route('products.index')->with('success', 'عملیات بروزرسانی با موفقیت انجام شد.');
+        $result = $this->product_repository->update($input, $id);
+        if (!$result) {
+            return redirect()->back()->with('error', 'بروزرسانی محصول با مشکل مواجه شد');
+        }
+        return redirect()->route('products.index')->with('success', 'محصول جدید با موفقیت بروزرسانی شد');
     }
 
-    public function destroy($id)
+    /**
+     * Remove the specified resource from storage.
+     * @param int $id
+     * @return RedirectResponse
+     * @throws AuthorizationException
+     */
+    public function destroy(int $id)
     {
-        $product = $this->repo->findByid($id);
+        $product = $this->product_repository->findByid($id);
         $this->authorize('delete', $product);
-        if ($product->banner) {
-            $product->banner->delete();
+        try {
+            Storage::disk('public')->delete($product->image);
+        } catch (QueryException | \Exception $ex) {
+            Log::error($ex->getMessage());
         }
-        $product->delete();
-        return AjaxResponses::SuccessResponse();
+        $result = $this->product_repository->delete($product);
+        if (!$result) {
+            return redirect()->back();
+        }
+        return redirect()->back();
+    }
+
+    /**
+     * enable banner
+     * @param int $id
+     * @return RedirectResponse
+     */
+    public function toggle(int $id): RedirectResponse
+    {
+        $product = $this->product_repository->findById($id);
+        $input = ['is_enabled' => !$product->is_enabled];
+        $result = $this->product_repository->update($input, $id);
+        if (!$result) {
+            return redirect()->back()->with('error', 'فعالسازی با مشکل مواجه شد');
+        }
+        return redirect()->back()->with('success', 'فعال شد');
+    }
+
+
+    /**
+     * enable banner
+     * @param int $id
+     * @return RedirectResponse
+     */
+    public function status(int $id): RedirectResponse
+    {
+        $product = $this->product_repository->findById($id);
+        $input = ['status' => !$product->status];
+        $result = $this->product_repository->update($input, $id);
+        if (!$result) {
+            return redirect()->back()->with('error', 'فعالسازی با مشکل مواجه شد');
+        }
+        return redirect()->back()->with('success', 'فعال شد');
     }
 }

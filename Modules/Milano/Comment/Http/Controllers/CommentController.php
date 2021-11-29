@@ -1,72 +1,79 @@
 <?php
+
 namespace Milano\Comment\Http\Controllers;
+
+use Milano\Comment\Events\CommentSubmittedEvent;
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
 use Milano\Comment\Http\Requests\CommentRequest;
+use Milano\Comment\Models\Comment;
 use Milano\Comment\Repositories\CommentRepo;
 use Milano\Common\Responses\AjaxResponses;
+use Milano\Product\Models\Product;
+use Milano\RolePermissions\Models\Permission;
 
 class CommentController extends Controller
 {
-    public $repo;
-    public function __construct(CommentRepo $commentRepo)
+
+    public function index(CommentRepo $repo)
     {
-        $this->repo = $commentRepo;
+        $this->authorize('index', Comment::class);
+        $comments = $repo
+            ->searchBody(request("body"))
+            ->searchEmail(request("email"))
+            ->searchName(request("name"))
+            ->searchStatus(request("status"));
+
+        if (!auth()->user()->hasAnyPermission(Permission::PERMISSION_MANAGE_COMMENTS, Permission::PERMISSION_SUPER_ADMIN)) {
+            $comments->query->whereHasMorph("commentable", [Product::class] , function ($query) {
+                return $query->where("teacher_id", auth()->id());
+            })->where("status", Comment::STATUS_APPROVED);
+        }
+
+        $comments = $comments->paginateParents();
+
+        return view("Comments::index", compact("comments"));
     }
 
-    public function index(Request $request)
+    public function show($comment)
     {
-        $comments = $this->repo->searchEmail
-        ($request->email)->paginate();
-        $this->authorize('index', $comments);
-        return view('Comments::index' , compact('comments'));
+        $comment = Comment::query()->where("id", $comment)->with("commentable", "user", "comments")->firstOrFail();
+        $this->authorize('view', $comment);
+        return view("Comments::show", compact("comment"));
     }
 
-    public function details($id)
+    public function store(CommentRequest $request, CommentRepo $repo)
     {
-        $comment = $this->repo->findByid($id);
-        $this->authorize('details', $comment);
-        return view('Comments::details', compact('comment'));
+        $comment = $repo->store($request->all());
+        event(new CommentSubmittedEvent($comment));
+        newFeedback("عملیات موفقیت آمیز", "دیدگاه شما با ثبت گردید.");
+        return back();
     }
 
-    public function update($id, CommentRequest $request)
+    public function accept($id, CommentRepo $commentRepo)
     {
-        $comment = $commentRepo->update(['body' => $request->body] ,$id);
-        $this->authorize('edit', $comment);
-        return redirect(route('comments.index'));
+        $this->authorize('manage', Comment::class);
+        if ($commentRepo->updateStatus($id, Comment::STATUS_APPROVED)) {
+            return AjaxResponses::SuccessResponse();
+        }
+
+        return AjaxResponses::FailedResponse();
     }
 
-    public function reply($id)
+    public function reject($id, CommentRepo $commentRepo)
     {
-        $comment = $this->repo->findByid($id);
-        $this->authorize('answer' , $comments);
-        return view('comments.reply' , compact('comment'));
+        $this->authorize('manage', Comment::class);
+        if ($commentRepo->updateStatus($id, Comment::STATUS_REJECTED)) {
+            return AjaxResponses::SuccessResponse();
+        }
+
+        return AjaxResponses::FailedResponse();
     }
 
-    public function replyStore(Request $request)
+    public function destroy($id, CommentRepo $repo)
     {
-        $comment = $this->repo->replyStore($request);
-        $this->authorize('answer',$comment );
-        return redirect(route('comments.index'));
-    }
-
-    public function destroy($id)
-    {
-        $comment = $this->repo->findByid($id);
-        $this->authorize('delete', $comment);
+        $this->authorize('manage', Comment::class);
+        $comment = $repo->findOrFail($id);
         $comment->delete();
         return AjaxResponses::SuccessResponse();
-    }
-
-    public function accept($id)
-    {
-        $comment = $this->repo->accept($id);
-        $this->authorize('change_confirmation_status', $comment);
-    }
-
-    public function reject($id)
-    {
-        $comment = $this->repo->reject($id);
-        $this->authorize('change_confirmation_status', $comment);
     }
 }

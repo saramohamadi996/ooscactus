@@ -31,6 +31,7 @@ use Milano\Cart\Models\Cart;
  * @property int $status
  * @property int $confirmation_status
  * @property int $body
+ * @property int $is_enabled
  * @package Milano\Product\Models
  */
 class Product extends Model
@@ -53,12 +54,11 @@ class Product extends Model
      */
     protected $fillable = [
         'seller_id', 'category_id', 'image', 'title', 'meta_description', 'slug', 'priority',
-        'price', 'seller_share', 'stock', 'status', 'code_product', 'confirmation_status', 'body',
+        'price', 'seller_share', 'stock', 'status', 'code_product', 'body', 'is_enabled',
     ];
 
     /**
      * The attributes that should be cast.
-     *
      * @var array
      */
     protected $casts = [
@@ -75,31 +75,17 @@ class Product extends Model
         'price' => 'string',
         'body' => 'string',
         'code_product' => 'string',
-        'confirmation_status' => 'array',
-        'status' => 'array',
+        'is_enabled' => 'boolean',
+        'status' => 'boolean',
         'created_at' => 'timestamp',
         'updated_at' => 'timestamp',
-
     ];
 
-    /**
-     * Constants that deal only with the database.
-     */
-    const CONFIRMATION_STATUS_ACCEPTED = 'accepted';
-    const CONFIRMATION_STATUS_REJECTED = 'rejected';
-    const CONFIRMATION_STATUS_PENDING = 'pending';
-    static $confirmationStatuses = [
-        self::CONFIRMATION_STATUS_ACCEPTED,
-        self::CONFIRMATION_STATUS_PENDING,
-        self::CONFIRMATION_STATUS_REJECTED
-    ];
 
-    /**
-     * Constants that deal only with the database.
-     */
-    const STATUS_AVAILABLE = 'available';
-    const STATUS_UNAVAILABLE = 'unavailable';
-    static $statuses = [self::STATUS_AVAILABLE, self::STATUS_UNAVAILABLE];
+    public function images()
+    {
+        return $this->hasMany(ImageProduct::class, 'product_id');
+    }
 
     public function popularProducts()
     {

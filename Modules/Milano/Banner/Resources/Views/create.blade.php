@@ -37,8 +37,7 @@
                 <x-input name="title" type="text" placeholder="عنوان بنر" required/>
                 <x-input name="link" type="text" placeholder="لینک بنر" required/>
                 </div>
-                <input type="file" name="image" required
-                       oninvalid="this.setCustomValidity('فیلد تصاویر بنر الزامی است')" multiple placeholder="تصویر بنر">
+                <input type="file" name="image" required oninvalid="this.setCustomValidity('فیلد تصاویر بنر الزامی است')" multiple placeholder="تصویر بنر">
 <br>
 <br>
                 <button class="btn btn-webamooz_net">ذخیره</button>

@@ -3,8 +3,8 @@
 namespace Milano\Product\Repositories;
 
 use Illuminate\Contracts\Pagination\Paginator;
+use Illuminate\Database\Eloquent\Model;
 use Milano\Product\Repositories\Interfaces\ProductRepositoryInterface;
-use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\QueryException;
@@ -14,17 +14,21 @@ use Milano\Product\Models\Product;
 
 class ProductRepository implements ProductRepositoryInterface
 {
+    public function getProductsBySellerId(int $id)
+    {
+        return Product::where('seller_id', $id)->get();
+    }
+
     /**
      * fetch query builder products.
-     *
-     * @param $input
-     * @return Builder|mixed
+     * @param array $input
+     * @return Builder
      */
     private function fetchQueryBuilder(array $input = []): Builder
     {
         return Product::query()
             ->when(isset($input['title']), function (Builder $query) use ($input) {
-                $query->where('title', '=', $input['title']);
+                $query->orWhere('title', 'like', '%' . $input['title'] . '%');
             })
             ->when(isset($input['code_product']), function (Builder $query) use ($input) {
                 $query->where('code_product', '=', $input['code_product']);
@@ -56,7 +60,6 @@ class ProductRepository implements ProductRepositoryInterface
 
     /**
      * find by id the record with the given id.
-     * @param $id
      * @return Collection
      */
     public function getAll(): Collection
@@ -67,7 +70,7 @@ class ProductRepository implements ProductRepositoryInterface
     /**
      * find by id the record with the given id.
      * @param int $id
-     * @return Builder|Product
+     * @return Builder|Builder[]|Collection|Model|Product
      */
     public function findById(int $id): Product
     {
@@ -77,24 +80,29 @@ class ProductRepository implements ProductRepositoryInterface
     /**
      * Store a newly created resource in storage.
      * @param array $value
+     * @param $images
      * @return bool
      */
-    public function store(array $value): bool
+    public function store(array $value, $images): bool
     {
-        $product = new Product();
-        $product->seller_id = $value['seller_id'];
-        $product->category_id = $value['category_id'];
-        $product->title = $value['title'];
-        $product->meta_description = $value['meta_description'];
-        $product->slug = Str::slug($value['slug']);
-        $product->priority = $value['priority'];
-        $product->price = $value['price'];
-        $product->seller_share = $value['seller_share'];
-        $product->body = $value['body'];
-        $product->image = $value['image'];
-        $product->stock = $value['stock'];
-        $product->code_product = $value['code_product'];
-        $product->confirmation_status = Product::CONFIRMATION_STATUS_PENDING;
+        $product = Product::create([
+            'seller_id' => $value['seller_id'],
+            'category_id' => $value['category_id'],
+            'title' => $value['title'],
+            'meta_description' => $value['meta_description'],
+            'slug' => Str::slug($value['slug']),
+            'priority' => $value['priority'],
+            'price' => $value['price'],
+            'seller_share' => $value['seller_share'],
+            'body' => $value['body'],
+            'stock' => $value['stock'],
+            'code_product' => $value['code_product'],
+        ]);
+        if (isset($images[0])) {
+            foreach ($images as $key => $image) {
+                $product->image = $images[0];
+            }
+        }
         try {
             $product->save();
         } catch (QueryException $queryException) {
@@ -107,30 +115,58 @@ class ProductRepository implements ProductRepositoryInterface
     /**
      * Update the specified resource in storage.
      * @param array $value
-     * @param Product $product
+     * @param int $id
      * @return bool
      */
-    public function update(array $value, Product $product): bool
+    public function update(array $value, int $id): bool
     {
-        $product->seller_id = $value['seller_id'];
-        $product->category_id = $value['category_id'];
-        $product->title = $value['title'];
-        $product->meta_description = $value['meta_description'];
-        $product->slug = Str::slug($value['slug']);
-        $product->priority = $value['priority'];
-        $product->price = $value['price'];
-        $product->seller_share = $value['seller_share'];
-        $product->body = $value['body'];
-        $product->image = $value['image'];
-
-        $product->stock = $value['stock'];
-//        $product->code_product = $value['code_product'];
-        $product->confirmation_status = Product::CONFIRMATION_STATUS_PENDING;
+        $product = $this->findById($id);
+        if (isset($value['status'])) {
+            $product->status = $value['status'];
+        }
+        if (isset($value['is_enabled'])) {
+            $product->is_enabled = $value['is_enabled'];
+        }
+        if (isset($value['seller_id'])) {
+            $product->seller_id = $value['seller_id'];
+        }
+        if (isset($value['category_id'])) {
+            $product->category_id = $value['category_id'];
+        }
+        if (isset($value['title'])) {
+            $product->title = $value['title'];
+        }
+        if (isset($value['meta_description'])) {
+            $product->meta_description = $value['meta_description'];
+        }
+        if (isset($value['slug'])) {
+            $product->slug = Str::slug($value['slug']);
+        }
+        if (isset($value['priority'])) {
+            $product->priority = $value['priority'];
+        }
+        if (isset($value['price'])) {
+            $product->price = $value['price'];
+        }
+        if (isset($value['seller_share'])) {
+            $product->seller_share = $value['seller_share'];
+        }
+        if (isset($value['body'])) {
+            $product->body = $value['body'];
+        }
+        if (isset($value['stock'])) {
+            $product->stock = $value['stock'];
+        }
+        if (isset($value['code_product'])) {
+            $product->code_product = $value['code_product'];
+        }
+        if (isset($mainPicture)) {
+            $product->image = $mainPicture;
+        }
         try {
-            dd($product);
             $product->save();
         } catch (QueryException $queryException) {
-            Log::error($queryException->getMessage());
+            Log::error($queryException->getmessage());
             return false;
         }
         return true;
@@ -140,7 +176,6 @@ class ProductRepository implements ProductRepositoryInterface
      * Remove the specified resource from storage.
      * @param Product $product
      * @return bool
-     * @throws \Exception
      */
     public function delete(Product $product): bool
     {
@@ -151,39 +186,5 @@ class ProductRepository implements ProductRepositoryInterface
             return false;
         }
         return true;
-    }
-
-
-    public function updateConfirmationStatus($product)
-    {
-        $product->update(['confirmation_status' => Product::CONFIRMATION_STATUS_ACCEPTED]);
-        return $product;
-    }
-
-    public function latestProducts()
-    {
-        return Product::where('confirmation_status', Product::CONFIRMATION_STATUS_ACCEPTED)->latest()->take(8)->get();
-    }
-
-    public function accept($id)
-    {
-        $product = $this->findByid($id);
-        return $product->update(['confirmation_status' => Product::CONFIRMATION_STATUS_ACCEPTED]);
-    }
-
-    public function reject($id)
-    {
-        $product = $this->findByid($id);
-        return $product->update(['confirmation_status' => Product::CONFIRMATION_STATUS_REJECTED]);
-    }
-
-    public function getProductsBySellerId(?int $id)
-    {
-        return Product::where('seller_id', $id)->get();
-    }
-
-    public function getSellers($userId)
-    {
-        return Product::where('seller_id', $userId)->get();
     }
 }

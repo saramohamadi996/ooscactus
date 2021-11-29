@@ -4,6 +4,7 @@ namespace Milano\User\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Milano\Cart\Models\Cart;
+use Milano\Comment\Models\Comment;
 use Milano\Coupon\Models\Coupon;
 use Milano\Order\Models\Order;
 use Milano\Payment\Models\Payment;
@@ -106,8 +107,8 @@ class User extends Authenticatable implements JWTSubject
 
     public function profilePath()
     {
-        return $this->username ? route('viewProfile', $this->username)
-            : route('viewProfile', 'username');
+        return null;
+        return $this->username ? route('viewProfile', $this->username) : route('viewProfile', 'username');
     }
 
     public function getuserImageAttribute()
@@ -139,8 +140,23 @@ class User extends Authenticatable implements JWTSubject
         return $this->hasMany(Settlement::class);
     }
 
-    public function coupons()
+    public function comments()
     {
-        return $this->morphToMany(Coupon::class, 'couponable');
+        return $this->hasMany(Comment::class);
+    }
+
+    public function tickets()
+    {
+        return $this->hasMany(Ticket::class);
+    }
+
+    public function ticketReplies()
+    {
+        return $this->hasMany(Reply::class);
+    }
+
+    public function routeNotificationForSms()
+    {
+        return $this->mobile;
     }
 }

@@ -165,7 +165,7 @@ $('.discounts #discounts-field-2').on('click', function (e) {
 $('.discounts #discounts-field-1').on('click', function (e) {
     $('.discounts .dropdown-select').removeClass('is-active')
 });
-function updateConfirmationStatus(event, route, message, status, field = 'confirmation_status') {
+function change_is_enabled(event, route, message, status, field = 'confirmation_status') {
     event.preventDefault();
     if(confirm(message)){
         $.post(route, { _method: "PATCH", _token: $('meta[name="_token"]').attr('content') })
