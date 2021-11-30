@@ -15,10 +15,10 @@ interface CategoryRepositoryInterface
 
     /**
      * paginate categories.
-     * @param int $perpage
+     * @param int $per_page
      * @return LengthAwarePaginator
      */
-    public function paginate(int $perpage = 10): LengthAwarePaginator;
+    public function paginate(int $per_page = 10): LengthAwarePaginator;
 
     /**
      * Get the value from the database.
@@ -32,7 +32,7 @@ interface CategoryRepositoryInterface
      * @param int $id
      * @return Builder|Category
      */
-    public function findById(int $id): Category;
+    public function getById(int $id): Category;
 
     /**
      * Store a newly created resource in storage.

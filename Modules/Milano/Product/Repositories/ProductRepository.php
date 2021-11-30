@@ -72,7 +72,7 @@ class ProductRepository implements ProductRepositoryInterface
      * @param int $id
      * @return Builder|Builder[]|Collection|Model|Product
      */
-    public function findById(int $id): Product
+    public function getById(int $id): Product
     {
         return $this->fetchQueryBuilder()->findOrFail($id);
     }
@@ -120,7 +120,7 @@ class ProductRepository implements ProductRepositoryInterface
      */
     public function update(array $value, int $id): bool
     {
-        $product = $this->findById($id);
+        $product = $this->getById($id);
         if (isset($value['status'])) {
             $product->status = $value['status'];
         }

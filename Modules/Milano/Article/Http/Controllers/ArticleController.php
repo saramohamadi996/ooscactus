@@ -1,82 +1,65 @@
 <?php
 
 namespace Milano\Article\Http\Controllers;
-use Illuminate\Http\Request;
-use Milano\Article\Repositories\ArticleRepo;
-use Milano\Category\Repositories\CategoryRepo;
-use Illuminate\Support\Str;
+
 use App\Http\Controllers\Controller;
+use Illuminate\Database\QueryException;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
+use Illuminate\View\View;
 use Milano\Article\Http\Requests\ArticleRequest;
-use Illuminate\Support\Facades\Storage;
-use Milano\Common\Responses\AjaxResponses;
+use Milano\Article\Http\Requests\GetAllRequest;
+use Milano\Article\Models\Article;
+use Milano\Article\Repositories\Interfaces\ArticleRepositoryInterface;
+use Milano\Category\Repositories\Interfaces\CategoryRepositoryInterface;
 
 class ArticleController extends Controller
 {
-    public $repo;
-    public $categoryRepo;
-    public function __construct(ArticleRepo $articleRepo, CategoryRepo $categoryRepo)
+    protected ArticleRepositoryInterface $article_repository;
+    protected CategoryRepositoryInterface $category_repository;
+
+    public function __construct(ArticleRepositoryInterface $article_repository,
+                                CategoryRepositoryInterface $category_repository)
     {
-        $this->repo = $articleRepo;
-        $this->categoryRepo = $categoryRepo;
+        $this->article_repository = $article_repository;
+        $this->category_repository = $category_repository;
     }
 
-    public function index(Request $request)
+    public function index(GetAllRequest $request)
     {
-        $categories = $this->repo;
-        $articles = $this->repo
-            ->searchCategoryId($request->category_id)
-            ->searchTitle($request->title)->paginate();
+        $category_id = [];
+        $input = $request->only(['title', 'category_id']);
+        $categories = $this->category_repository->getAll($category_id);
+        $articles = $this->article_repository->paginate($input);
         $this->authorize('index', $articles);
-        return view('Articles::index' , compact('articles'));
+//        return Article::with('category')->simplePaginate();
+        return view('Articles::index', compact('articles', 'categories'));
     }
 
-    public function create(CategoryRepo $categoryRepo)
+    public function create()
     {
-        $categories = $this->repo;
-        $categories = $this->categoryRepo->all();
-        return view('Articles::create' , compact('categories'));
+        $category_id = [];
+        $categories = $this->category_repository->getAll($category_id);
+        $article = $this->article_repository->getAll();
+        $this->authorize('create', $article);
+        return view('Articles::create', compact('article', 'categories'));
     }
 
     public function store(ArticleRequest $request)
     {
-        $article = $this->repo->store($request);
-        $article->categories()->sync($request->category_id);
-        $this->authorize('store', $article);
-        return redirect(route('articles.index'));
+        $input = $request->only(['title', 'slug', 'body']);
+        $result = $this->article_repository->store($input);
+        $categories = $this->article_repository->storeCategory($input,$request->category_id);
+//        $article->categories()->sync($request->category_id);
+        if (!$result) {
+            return redirect()->back()->with('error', 'ایجاد محصول با مشکل مواجه شد');
+        }
+        return redirect()->route('articles.index', 'categories')->with('success', 'محصول جدید با موفقیت ایجاد شد');
     }
 
-    public function edit($id, CategoryRepo $categoryRepo)
-    {
-        $article = $this->repo->findByid($id);
-        $this->authorize('edit', $article);
-        $categories = $categoryRepo;
-        return view('Articles::edit' , compact('categories' , 'article'));
-    }
 
-    public function update($id, ArticleRequest $request)
-    {
-        $article = $this->repo->update($id, $request);
-        $this->authorize('edit', $article);
-        return redirect(route('articles.index'));
-    }
 
-    public function destroy($id)
-    {
-        $article = $this->repo->findByid($id);
-        $this->authorize('delete', $article);
-        $article->delete();
-        return AjaxResponses::SuccessResponse();
-    }
 
-    public function accept($id)
-    {
-        $article = $this->repo->accept($id);
-        $this->authorize('change_confirmation_status', $article);
-    }
 
-    public function reject($id)
-    {
-        $article = $this->repo->reject($id);
-        $this->authorize('change_confirmation_status', $article);
-    }
+
 }

@@ -15,33 +15,21 @@ class CreateArticlesTable extends Migration
             $table->string('slug');
             $table->longText('body');
             $table->string('image')->nullable();
-            $table->enum('confirmation_status', ['pending'])->default('pending');
-
+            $table->boolean('is_enabled')->default('0');
             $table->integer('viewCount')->default(0);
             $table->integer('commentCount')->default(0);
             $table->timestamps();
-            $table->foreign('user_id')->references('id')->on('users')->onDelete('CASCADE');
-        });
-
-        Schema::create('article_category', function (Blueprint $table) {
-            $table->unsignedBigInteger('article_id');
-            $table->unsignedBigInteger('category_id');
-
-            $table->foreign('article_id')->references('id')->on('articles')->onDelete('CASCADE');
-            $table->foreign('category_id')->references('id')->on('categories')->onDelete('CASCADE');
-
-            $table->primary(['article_id' , 'category_id']);
+            $table->foreign('user_id')->references('id')
+                ->on('users')->onDelete('CASCADE');
         });
     }
 
     /**
      * Reverse the migrations.
-     *
      * @return void
      */
     public function down()
     {
-        Schema::dropIfExists('article_category');
         Schema::dropIfExists('articles');
     }
 }

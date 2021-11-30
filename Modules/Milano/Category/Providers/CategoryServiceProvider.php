@@ -4,6 +4,8 @@ use Illuminate\Support\Facades\Gate;
 use \Illuminate\Support\ServiceProvider;
 use Milano\Article\Policies\ArticlePolicy;
 use Milano\Category\Models\Category;
+use Milano\Category\Repositories\CategoryRepository;
+use Milano\Category\Repositories\Interfaces\CategoryRepositoryInterface;
 use Milano\RolePermissions\Models\Permission;
 
 class CategoryServiceProvider extends ServiceProvider
@@ -25,6 +27,8 @@ class CategoryServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+        $this->app->bind(CategoryRepositoryInterface::class, CategoryRepository::class);
+
         $this->app->booted(function(){
             config()->set('sidebar.items.categories', [
                 "icon" => "i-categories",

@@ -6,6 +6,8 @@ use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
 use Milano\Product\Models\Product;
 use Milano\Product\Policies\ProductPolicy;
+use Milano\Product\Repositories\Interfaces\ProductRepositoryInterface;
+use Milano\Product\Repositories\ProductRepository;
 use Milano\RolePermissions\Models\Permission;
 
 class ProductServiceProvider extends ServiceProvider
@@ -29,6 +31,7 @@ class ProductServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+        $this->app->bind(ProductRepositoryInterface::class, ProductRepository::class);
         config()->set('sidebar.items.products', [
             "icon" => "i-courses",
             "title" => "محصولات",

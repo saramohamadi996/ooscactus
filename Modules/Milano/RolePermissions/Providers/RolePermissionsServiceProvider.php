@@ -9,6 +9,10 @@ use Milano\RolePermissions\Models\Permission;
 use Illuminate\Support\ServiceProvider;
 use Milano\RolePermissions\Models\Role;
 use  Milano\RolePermissions\Policies\RolePermissionPolicy;
+use Milano\RolePermissions\Repositories\Interfaces\PermissionRepositoryInterface;
+use Milano\RolePermissions\Repositories\Interfaces\RoleRepositoryInterface;
+use Milano\RolePermissions\Repositories\PermissionRepository;
+use Milano\RolePermissions\Repositories\RoleRepository;
 
 class RolePermissionsServiceProvider extends ServiceProvider
 {
@@ -35,6 +39,8 @@ class RolePermissionsServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+        $this->app->bind(PermissionRepositoryInterface::class, PermissionRepository::class);
+        $this->app->bind(RoleRepositoryInterface::class, RoleRepository::class);
         $this->app->booted(function () {
             config()->set('sidebar.items.role-permissions', [
                 "icon" => "i-role-permissions",

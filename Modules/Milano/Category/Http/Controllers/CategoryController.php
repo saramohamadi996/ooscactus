@@ -47,7 +47,7 @@ class CategoryController extends Controller
      */
     public function edit(int $category_id): View
     {
-        $category = $this->category_repository->findById($category_id);
+        $category = $this->category_repository->getById($category_id);
         $categories = $this->category_repository->getAll($category_id);
         $this->authorize('edit', $category);
 
@@ -77,7 +77,7 @@ class CategoryController extends Controller
      */
     public function update(int $id, CategoryUpdateRequest $request): RedirectResponse
     {
-        $category = $this->category_repository->findById($id);
+        $category = $this->category_repository->getById($id);
         $input = $request->only('title', 'slug', 'parent_id');
         $result = $this->category_repository->update($input, $category);
         if (!$result) {
@@ -94,7 +94,7 @@ class CategoryController extends Controller
      */
     public function destroy(int $id): RedirectResponse
     {
-        $category = $this->category_repository->findById($id);
+        $category = $this->category_repository->getById($id);
         $this->authorize('destroy', $category);
         $result = $this->category_repository->delete($category);
         if (!$result) {

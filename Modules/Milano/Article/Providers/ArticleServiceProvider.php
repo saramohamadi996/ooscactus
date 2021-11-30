@@ -5,6 +5,8 @@ use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
 use Milano\Article\Models\Article;
 use Milano\Article\Policies\ArticlePolicy;
+use Milano\Article\Repositories\ArticleRepository;
+use Milano\Article\Repositories\Interfaces\ArticleRepositoryInterface;
 use Milano\RolePermissions\Models\Permission;
 
 class ArticleServiceProvider extends ServiceProvider
@@ -21,6 +23,7 @@ class ArticleServiceProvider extends ServiceProvider
 
     public function boot()
     {
+        $this->app->bind(ArticleRepositoryInterface::class, ArticleRepository::class);
         config()->set('sidebar.items.articles', [
             "icon" => "i-articles",
             "title" => "مقالات",

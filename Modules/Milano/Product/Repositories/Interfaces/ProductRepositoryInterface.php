@@ -30,7 +30,7 @@ interface ProductRepositoryInterface
      * find by id the record with the given id.
      * @return Builder|Builder[]|Collection|Model|Product
      */
-    public function findById(int $id): Product;
+    public function getById(int $id): Product;
 
     /**
      * Store a newly created resource in storage.

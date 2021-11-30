@@ -1,5 +1,7 @@
 <?php
+
 namespace Milano\Article\Models;
+
 use Illuminate\Database\Eloquent\Model;
 use Milano\Category\Models\Category;
 use Milano\Comment\Models\Comment;
@@ -10,16 +12,9 @@ use Hekmatinasser\Verta\Verta;
 
 class Article extends Model
 {
-    protected $guarded = [];
     protected $table = 'articles';
 
-    const CONFIRMATION_STATUS_ACCEPTED = 'accepted';
-    const CONFIRMATION_STATUS_REJECTED = 'rejected';
-    const CONFIRMATION_STATUS_PENDING = 'pending';
-    static $confirmationStatuses =
-    [self::CONFIRMATION_STATUS_ACCEPTED,
-    self::CONFIRMATION_STATUS_PENDING,
-    self::CONFIRMATION_STATUS_REJECTED];
+    protected $fillable = ['user_id', 'title', 'slug', 'body', 'image', 'is_enabled', 'viewCount', 'commentCount'];
 
     public function user()
     {
@@ -28,18 +23,19 @@ class Article extends Model
 
     public function categories()
     {
-        return $this->belongsToMany(Category::class);
+        return $this->belongsToMany(Category::class,
+            'article_categories', 'article_id', 'category_id');
+
     }
 
     public function latestArticle()
     {
-        return $this->where('confirmation_status' , self::CONFIRMATION_STATUS_PENDING)
-            ->orderBy('created_at')->latest()->take(3)->get();
+        return $this->where('is_enabled')->orderBy('created_at')->latest()->take(3)->get();
     }
 
     public function limitCharBody()
     {
-        return Str::words($this->body,  30 , '...' );
+        return Str::words($this->body, 30, '...');
     }
 
     public function limitCharTitle()

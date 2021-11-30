@@ -11,8 +11,8 @@
             <form action="{{ route('articles.store') }}" class="padding-30" method="post" enctype="multipart/form-data">
                 @csrf
                 <div class="d-flex multi-text">
-                <x-input name="title" placeholder="عنوان مقاله" type="text" required/>
-                <x-input type="text" name="slug" placeholder="نام پیوند(مفید برای سئو)" class="text" required />
+                <x-input name="title" placeholder="عنوان مقاله" type="text" />
+                <x-input type="text" name="slug" placeholder="نام پیوند(مفید برای سئو)" class="text"  />
                 </div>
 
                 <x-select name="category_id[]" id="">
@@ -23,7 +23,7 @@
                         @endforeach
                 </x-select>
 
-                <input type="file" name="image" required  multiple placeholder="تصویر مقاله">
+                <input type="file" name="image"   multiple placeholder="تصویر مقاله">
 
                 <textarea id="mytextarea" name="body"></textarea>
                 <br>
@@ -31,6 +31,7 @@
             </form>
         </div>
     </div>
+@endsection
 @section('js')
     @include('Common::layouts.tinymce')
 @endsection

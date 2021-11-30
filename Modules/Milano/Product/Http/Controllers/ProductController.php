@@ -59,16 +59,18 @@ class ProductController extends Controller
     /**
      * Display a listing of the resource.
      * @param ProductAllRequest $request
+     * @param int $category_id
      * @return Application|Factory|View
      * @throws AuthorizationException
      */
     public function index(ProductAllRequest $request)
     {
-        $id = [];
+        $category_id=[];
         $input = $request->only(['title', 'priority', 'price', 'code_product', 'seller_id', 'category_id',]);
         $products = $this->product_repository->paginate($input);
         $sellers = $this->user_repository->getSellers();
-        $categories = $this->category_repository->getAll($id);
+        $categories = $this->category_repository->getAll($category_id);
+
         $this->authorize('index', $products);
         return view('Products::index', compact('products', 'categories','sellers' ));
     }
@@ -81,7 +83,7 @@ class ProductController extends Controller
      */
     public function edit($id)
     {
-        $product = $this->product_repository->findByid($id);
+        $product = $this->product_repository->getById($id);
         $sellers = $this->user_repository->getSellers();
         $categories = $this->category_repository->getAll($id);
         $this->authorize('edit', $product);
@@ -97,11 +99,11 @@ class ProductController extends Controller
      */
     public function create()
     {
-        $id = [];
+        $category_id = [];
         $product = $this->product_repository->getAll();
         $this->authorize('create', $product);
         $sellers = $this->user_repository->getSellers();
-        $categories = $this->category_repository->getAll($id);
+        $categories = $this->category_repository->getAll($category_id);
         return view('Products::create', compact('categories', 'sellers'));
     }
 
@@ -136,7 +138,7 @@ class ProductController extends Controller
      */
     public function update($id, Request $request)
     {
-        $product = $this->product_repository->findById($id);
+        $product = $this->product_repository->getById($id);
         $input = $request->only('seller_id', 'category_id', 'title', 'meta_description', 'slug', 'priority',
             'price', 'seller_share', 'body', 'image', 'stock', 'code_product', 'is_enabled');
         if ($request->hasFile('images')) {
@@ -166,7 +168,7 @@ class ProductController extends Controller
      */
     public function destroy(int $id)
     {
-        $product = $this->product_repository->findByid($id);
+        $product = $this->product_repository->getById($id);
         $this->authorize('delete', $product);
         try {
             Storage::disk('public')->delete($product->image);
@@ -187,7 +189,7 @@ class ProductController extends Controller
      */
     public function toggle(int $id): RedirectResponse
     {
-        $product = $this->product_repository->findById($id);
+        $product = $this->product_repository->getById($id);
         $input = ['is_enabled' => !$product->is_enabled];
         $result = $this->product_repository->update($input, $id);
         if (!$result) {
@@ -204,7 +206,7 @@ class ProductController extends Controller
      */
     public function status(int $id): RedirectResponse
     {
-        $product = $this->product_repository->findById($id);
+        $product = $this->product_repository->getById($id);
         $input = ['status' => !$product->status];
         $result = $this->product_repository->update($input, $id);
         if (!$result) {

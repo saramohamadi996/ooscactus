@@ -36,7 +36,7 @@ class Category extends Model
     /**define Category's fallible fields.
      * @var string[]
      */
-    protected $fillable = ['title', 'slug'];
+    protected $fillable = ['title', 'slug', 'parent_id'];
 
     /**
      * define Category's casts
@@ -94,15 +94,9 @@ class Category extends Model
      */
     public function articles()
     {
-        return $this->belongsToMany(Article::class);
+        return $this->belongsToMany(Article::class,
+            'article_categories', 'article_id', 'category_id');
     }
 
-    /**
-     * Get all of the coupons for the category.
-     * @return MorphToMany
-     */
-    public function coupons()
-    {
-        return $this->morphToMany(Coupon::class, 'couponable');
-    }
+
 }
