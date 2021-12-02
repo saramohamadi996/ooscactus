@@ -75,7 +75,7 @@ class RolePermissionsController extends Controller
     public function store(RoleRequest $request): RedirectResponse
     {
         $input = $request->only(['name', 'permissions']);
-        $result = $this->role_repository->create($input);
+        $result = $this->role_repository->store($input);
         if (!$result) {
             return redirect()->back()->with('error', 'عملیات ذخیره سازی با شکست مواجه شد.');
         }

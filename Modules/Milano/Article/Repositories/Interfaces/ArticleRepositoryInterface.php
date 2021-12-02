@@ -14,8 +14,6 @@ interface ArticleRepositoryInterface
 
     public function store(array $value);
 
-    public function storeCategory(array $value, $store);
-
     public function update(array $value, int $id);
 
     public function delete(Article $article);

@@ -17,7 +17,7 @@ class CreateArticleCategoriesTable extends Migration
             $table->foreign('category_id')->references('id')
                 ->on('categories')->onDelete('CASCADE');
 
-            $table->primary(['article_id', 'category_id']);
+//            $table->primary(['article_id', 'category_id']);
         });
     }
 

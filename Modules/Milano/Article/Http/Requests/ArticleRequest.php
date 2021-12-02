@@ -22,7 +22,7 @@ class ArticleRequest extends FormRequest
             'title' => 'nullable|min:3|max:250',
             'slug' => 'nullable|min:3|max:250',
             'category_id' => 'nullable|exists:categories,id',
-//            'image' => 'required|mimes:jpg,jpeg,png',
+            'image' => 'nullable|mimes:jpg,jpeg,png',
             'body' => 'nullable',
         ];
     }

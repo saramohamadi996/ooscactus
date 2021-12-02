@@ -37,9 +37,11 @@ class RoleRepository implements RoleRepositoryInterface
         return $this->fetchQueryBuilder()->findOrFail($id);
     }
 
-    public function create(array $value): bool
+    public function store(array $value): bool
     {
-        $role = Role::create(['name' => $value['name']])->syncPermissions($value['permissions']);
+        $role = new Role();
+        $role->name = $value['name'];
+        $role->syncPermissions($value['permissions']);
         try {
             $role->save();
         } catch (QueryException $queryException) {

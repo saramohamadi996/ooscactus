@@ -49,7 +49,7 @@
                             <td><a href="">{{ $article->id }}</a></td>
                             <td width="80"><img src="{{asset('/storage/' . $article->image)}}" width="80"></td>
                             <td><a href="">{{ $article->title }}</a></td>
-{{--                            <td>@foreach($article->categories as $category){{$category->title}}@endforeach</td>--}}
+                            <td>@foreach($article->categories as $category){{$category->title}}@endforeach</td>
                             <td><a href="">{{ $article->user->name }}</a></td>
                             <td>{{ \Morilog\Jalali\Jalalian::fromCarbon($article->created_at) }}</td>
                             <td><a href="">{{ $article->viewCount }}</a></td>

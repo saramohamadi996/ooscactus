@@ -8,7 +8,6 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use Milano\Article\Models\Article;
 use Milano\Article\Repositories\Interfaces\ArticleRepositoryInterface;
-use Milano\Product\Models\Product;
 
 class ArticleRepository implements ArticleRepositoryInterface
 {
@@ -38,34 +37,24 @@ class ArticleRepository implements ArticleRepositoryInterface
         return $this->fetchQueryBuilder($input)->paginate($per_page);
     }
 
-    //        if ($values->hasFile('image')) {
-//            $imagePath = $values->file('image');
-//            $imageName = $imagePath->getClientOriginalName();
-//            $dir = 'articles';
-//            $path = $imagePath->storeAs($dir, $imageName, 'public');
-//        }
     public function store(array $value)
     {
-        $article = new Article();
+        $article = new Article;
         $article->title = $value['title'];
         $article->slug = Str::slug($value['slug']);
         $article->body = $value['body'];
         $article->user_id = auth()->id();
-
-        if (isset($image)) {$article->image = $image;}
+        $article->image = $value['image'];
         try {
-            $article->save();
+            if ($article->save()) {
+                $category_id = $value['category_id'];
+                $article->categories()->sync($category_id);
+            }
         } catch (QueryException $query_exception) {
             Log::error($query_exception->getMessage());
             return false;
         }
         return true;
-    }
-
-    public function storeCategory(array $value, $store)
-    {
-        $article = new Article();
-        $article->categories()->attach( $value,$store->category_id);
     }
 
     public function update(array $value, int $id)

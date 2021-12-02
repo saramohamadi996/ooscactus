@@ -23,7 +23,7 @@
                         @endforeach
                 </x-select>
 
-                <input type="file" name="image"   multiple placeholder="تصویر مقاله">
+                <input type="file" name="image" multiple placeholder="تصویر مقاله">
 
                 <textarea id="mytextarea" name="body"></textarea>
                 <br>

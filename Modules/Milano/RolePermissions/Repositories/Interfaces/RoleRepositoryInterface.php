@@ -27,7 +27,7 @@ interface RoleRepositoryInterface
      * @param array $value
      * @return bool
      */
-    public function create(array $value): bool;
+    public function store(array $value): bool;
 
     /**
      * Update the specified resource in storage.

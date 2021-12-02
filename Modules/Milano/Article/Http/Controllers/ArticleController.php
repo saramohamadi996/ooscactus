@@ -3,15 +3,14 @@
 namespace Milano\Article\Http\Controllers;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Database\QueryException;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
-use Illuminate\View\View;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Redirect;
 use Milano\Article\Http\Requests\ArticleRequest;
 use Milano\Article\Http\Requests\GetAllRequest;
 use Milano\Article\Models\Article;
 use Milano\Article\Repositories\Interfaces\ArticleRepositoryInterface;
 use Milano\Category\Repositories\Interfaces\CategoryRepositoryInterface;
+use Symfony\Component\Console\Input\Input;
 
 class ArticleController extends Controller
 {
@@ -47,19 +46,12 @@ class ArticleController extends Controller
 
     public function store(ArticleRequest $request)
     {
-        $input = $request->only(['title', 'slug', 'body']);
+        $input = $request->only(['title','slug','body', 'user_id', 'category_id', 'image']);
         $result = $this->article_repository->store($input);
-        $categories = $this->article_repository->storeCategory($input,$request->category_id);
-//        $article->categories()->sync($request->category_id);
         if (!$result) {
-            return redirect()->back()->with('error', 'ایجاد محصول با مشکل مواجه شد');
+            return redirect()->back()->with('error', 'ایجاد مقاله با مشکل مواجه شد');
         }
-        return redirect()->route('articles.index', 'categories')->with('success', 'محصول جدید با موفقیت ایجاد شد');
+        return redirect()->route('articles.index')->with('success', 'مقاله جدید با موفقیت ایجاد شد');
     }
-
-
-
-
-
 
 }

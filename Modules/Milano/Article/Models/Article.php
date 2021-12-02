@@ -13,19 +13,23 @@ use Hekmatinasser\Verta\Verta;
 class Article extends Model
 {
     protected $table = 'articles';
-
-    protected $fillable = ['user_id', 'title', 'slug', 'body', 'image', 'is_enabled', 'viewCount', 'commentCount'];
+protected $guarded = [];
+//    protected $fillable = ['user_id', 'title', 'slug', 'body', 'image','category_id', 'is_enabled', 'viewCount', 'commentCount'];
 
     public function user()
     {
         return $this->belongsTo(User::class);
     }
 
+//    public function categories()
+//    {
+//        return $this->belongsToMany(Category::class, 'article_categories',
+////            'article_id', 'category_id'
+//        );
+//    }
     public function categories()
     {
-        return $this->belongsToMany(Category::class,
-            'article_categories', 'article_id', 'category_id');
-
+        return $this->belongsToMany(Category::class, 'article_categories');
     }
 
     public function latestArticle()
