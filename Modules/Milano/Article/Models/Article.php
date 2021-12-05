@@ -10,11 +10,22 @@ use Milano\User\Models\User;
 use Illuminate\Support\Str;
 use Hekmatinasser\Verta\Verta;
 
+/**
+ * Class Article
+ * @property int $user_id
+ * @property int $category_id
+ * @property string $image
+ * @property string $title
+ * @property string $slug
+ * @property boolean $is_enabled
+ * @property string $body
+ * @package Milano\Article\Models
+ */
 class Article extends Model
 {
     protected $table = 'articles';
-protected $guarded = [];
-//    protected $fillable = ['user_id', 'title', 'slug', 'body', 'image','category_id', 'is_enabled', 'viewCount', 'commentCount'];
+
+    protected $fillable = ['user_id', 'title', 'slug', 'body', 'image','category_id', 'is_enabled', 'viewCount', 'commentCount'];
 
     public function user()
     {

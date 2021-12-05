@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Milano\Category\Models\Category;
+use Milano\Product\Models\Product;
 
 interface CategoryRepositoryInterface
 {

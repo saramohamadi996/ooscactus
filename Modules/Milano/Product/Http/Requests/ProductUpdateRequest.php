@@ -20,7 +20,7 @@ class ProductUpdateRequest extends FormRequest
             "code_product"=>'nullable|unique:products,code_product',
             "stock"=>'nullable|numeric',
             "meta_description"=>'nullable|min:3|max:190',
-            "slug" => 'nullable|min:3|max:190|unique:products,slug',
+//            "slug" => 'nullable|min:3|max:190|unique:products,slug',
             "priority"=>'nullable|unique:products,priority||numeric|min:0',
             "price"=>'nullable|numeric|min:0|max:1000000000',
             "percent"=>'nullable|numeric|min:0|max:100',
@@ -32,7 +32,7 @@ class ProductUpdateRequest extends FormRequest
 
         if (request()->method === 'PATCH'){
             $rules['image[]'] = "nullable|mimes:jpg,png,jpeg";
-            $rules['slug'] = 'nullable||min:3|max:190|unique:products,slug' . request()->route('product');
+//            $rules['slug'] = 'nullable||min:3|max:190|unique:products,slug' . request()->route('product');
         }
         return $rules;
     }

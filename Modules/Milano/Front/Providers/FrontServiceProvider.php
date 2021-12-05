@@ -2,18 +2,14 @@
 namespace Milano\Front\Providers;
 
 use Illuminate\Support\ServiceProvider;
-use Milano\Ads\Models\Ads;
-use Milano\Article\Repositories\ArticleRepo;
+use Milano\Article\Repositories\ArticleRepository;
 use Milano\Baner\Models\Baner;
 use Milano\Banner\Models\Banner;
-use Milano\Banner\Repositories\BannerRepo;
-use Milano\Category\Models\Category;
-use Milano\Category\Repositories\CategoryRepo;
+use Milano\Category\Repositories\CategoryRepository;
 use Milano\Product\Models\Product;
 use Milano\Seller\Models\Seller;
 use Milano\Setting\Models\Setting;
 use Milano\Slideshow\Models\Slideshow;
-use Milano\Slideshow\Repositories\SlideshowRepo;
 
 class FrontServiceProvider extends ServiceProvider
 {
@@ -22,8 +18,9 @@ class FrontServiceProvider extends ServiceProvider
         $this->loadRoutesFrom(__DIR__. "/../Routes/front_routes.php");
         $this->loadViewsFrom(__DIR__. "/../Resources/Views", "Front");
 
+
         view()->composer('Front::layout.header', function ($view) {
-            $categories =  (new CategoryRepo())->tree();
+            $categories =  (new CategoryRepository())->tree();
             $view->with(compact('categories'));
         });
 
@@ -34,7 +31,8 @@ class FrontServiceProvider extends ServiceProvider
         });
 
         view()->composer('Front::layout.latestProducts',function ($view) {
-            $latestProducts = (new CategoryRepo())->latestProducts();
+
+            $latestProducts = (new CategoryRepository())->latestProducts();
             $view->with(compact('latestProducts'));
         });
 
@@ -44,7 +42,7 @@ class FrontServiceProvider extends ServiceProvider
         });
 
         view()->composer('Front::layout.popularArticles',function ($view) {
-            $popularArticles = (new ArticleRepo())->PopularArticles();
+            $popularArticles = (new ArticleRepository())->PopularArticles();
             $view->with(compact('popularArticles'));
         });
 

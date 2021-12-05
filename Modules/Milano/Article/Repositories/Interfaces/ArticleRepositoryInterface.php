@@ -3,6 +3,7 @@
 namespace Milano\Article\Repositories\Interfaces;
 
 use Milano\Article\Models\Article;
+use Milano\Product\Models\Product;
 
 interface ArticleRepositoryInterface
 {
@@ -14,7 +15,7 @@ interface ArticleRepositoryInterface
 
     public function store(array $value);
 
-    public function update(array $value, int $id);
+    public function update(array $value, Article $article);
 
     public function delete(Article $article);
 

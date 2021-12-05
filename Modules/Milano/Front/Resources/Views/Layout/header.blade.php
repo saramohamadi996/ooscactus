@@ -25,7 +25,7 @@
             </div>
             <div class="t-header-left">
                 <div class="icons"><div class="search-icon"></div><div class="menu-icon"></div></div>
-                <div class="join-teachers"><a href="{{ route('seller.singleStore') }}">فروش در اوس کاکتوس</a></div>
+                <div class="join-teachers"><a href="{{ route('seller.singleStore') }}">فروش در...</a></div>
                 @auth()
                     <div class="user-menu-account">
                         <div class="user-image"><img src="{{auth()->user()->userImage}}" alt="{{ auth()->user()->name }}"></div>
@@ -33,7 +33,7 @@
                         <div class="user-menu-account-dropdown">
                             <ul>
                                 <li><a href="{{ route('users.profile')}}" target="_blank">مشاهده پروفایل</a></li>
-                                <li><a href="{{ route('purchases.index') }}" target="_blank">خرید های من</a></li>
+{{--                                <li><a href="{{ route('purchases.index') }}" target="_blank">خرید های من</a></li>--}}
                                 <li><a href="{{{ route('dashboard') }}}" target="_blank">داشبورد</a></li>
                                 <li><a href="{{ route('logout')}}">خروج</a></li>
                             </ul>
@@ -73,7 +73,7 @@
                     </li>
                 @endforeach
                 <li class="main-menu"><a href="{{route('setting.contact-us')}}">تماس با ما</a></li>
-                <li class="main-menu join-teachers-li"><a href="{{route('seller.singleStore')}}">فروش در اوس کاکتوس</a></li>
+                <li class="main-menu join-teachers-li"><a href="{{route('seller.singleStore')}}">فروش در...</a></li>
                 <li class="main-menu"><a href="{{route('allArticles.article')}}">مقالات</a></li>
             </ul>
             <div class="dark-light">

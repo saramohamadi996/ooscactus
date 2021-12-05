@@ -47,13 +47,14 @@
                     @foreach($articles as $article)
                         <tr role="row" class="">
                             <td><a href="">{{ $article->id }}</a></td>
-                            <td width="80"><img src="{{asset('/storage/' . $article->image)}}" width="80"></td>
+                            <td><img width="80px" src="{{ asset('storage/'.$article->image) }}"></td>
                             <td><a href="">{{ $article->title }}</a></td>
                             <td>@foreach($article->categories as $category){{$category->title}}@endforeach</td>
                             <td><a href="">{{ $article->user->name }}</a></td>
                             <td>{{ \Morilog\Jalali\Jalalian::fromCarbon($article->created_at) }}</td>
                             <td><a href="">{{ $article->viewCount }}</a></td>
                             @can(Milano\Rolepermissions\Models\Permission::PERMISSION_MANAGE_ARTICLES)
+
                                 <td>
                                     <a name="is_enable" class=""
                                        @if($article->is_enabled == 1)href="{{route('articles.toggle',[$article->id])}}"
@@ -64,6 +65,7 @@
                                         @endif
                                     </a>
                                 </td>
+
                                 <td>
                                     <a href=""
                                        onclick="deleteItem(event, '{{ route('articles.destroy', $article->id) }}')"

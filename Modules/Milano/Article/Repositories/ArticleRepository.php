@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use Milano\Article\Models\Article;
 use Milano\Article\Repositories\Interfaces\ArticleRepositoryInterface;
+use Milano\Product\Models\Product;
 
 class ArticleRepository implements ArticleRepositoryInterface
 {
@@ -22,7 +23,7 @@ class ArticleRepository implements ArticleRepositoryInterface
             });
     }
 
-    public function getById(int $id)
+    public function getById( int $id)
     {
         return $this->fetchQueryBuilder()->findOrFail($id);
     }
@@ -57,9 +58,24 @@ class ArticleRepository implements ArticleRepositoryInterface
         return true;
     }
 
-    public function update(array $value, int $id)
+    public function update(array $value,  Article $article)
     {
-        // TODO: Implement update() method.
+        if (isset($value['title'])) {$article->title = $value['title'];}
+        if (isset($value['slug'])) {$article->slug = Str::slug($value['slug']);}
+        if (isset($value['body'])) {$article->body = $value['body'];}
+        if (isset($value['user_id'])) {$article->user_id = auth()->id();}
+        if (isset($value['image'])) {$article->image = $value['image'];}
+        if (isset($value['is_enabled'])) {$article->is_enabled = $value['is_enabled'];}
+        try {
+            if ($article->save()) {
+                $category_id = $value['category_id'];
+                $article->categories()->sync($category_id);
+            }
+        } catch (QueryException $query_exception) {
+            Log::error($query_exception->getMessage());
+            return false;
+        }
+        return true;
     }
 
     public function delete(Article $article)
@@ -72,6 +88,7 @@ class ArticleRepository implements ArticleRepositoryInterface
         }
         return true;
     }
+
 
     public function getArticlesBySellerId(int $id)
     {

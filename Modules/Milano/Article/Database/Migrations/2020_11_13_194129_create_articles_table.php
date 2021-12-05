@@ -15,7 +15,7 @@ class CreateArticlesTable extends Migration
             $table->string('slug');
             $table->longText('body');
             $table->string('image')->nullable();
-            $table->boolean('is_enabled')->default('0');
+//            $table->boolean('is_enabled')->default('0');
             $table->integer('viewCount')->default(0);
             $table->integer('commentCount')->default(0);
             $table->timestamps();

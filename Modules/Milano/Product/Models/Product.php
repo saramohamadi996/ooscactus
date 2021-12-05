@@ -19,19 +19,18 @@ use Milano\Cart\Models\Cart;
  * @property int $seller_id
  * @property int $category_id
  * @property int $product_id
- * @property int $image
- * @property int $title
- * @property int $meta_description
- * @property int $slug
+ * @property string $image
+ * @property string $title
+ * @property string $meta_description
+ * @property string $slug
  * @property int $priority
  * @property int $price
  * @property int $seller_share
  * @property int $stock
- * @property int $code_product
- * @property int $status
- * @property int $confirmation_status
- * @property int $body
- * @property int $is_enabled
+ * @property string $code_product
+ * @property boolean $status
+ * @property boolean $is_enabled
+ * @property string $body
  * @package Milano\Product\Models
  */
 class Product extends Model
@@ -218,10 +217,10 @@ class Product extends Model
             $query->latest();
         }
 
-        if (request('status') == self::STATUS_AVAILABLE) {
-            return $query->where('status', self::STATUS_AVAILABLE);
-        } elseif (request('status') == self::STATUS_UNAVAILABLE) {
-            return $query->where('status', self::STATUS_UNAVAILABLE);
+        if (request('status') == 1) {
+            return $query->where('status', 1);
+        } elseif (request('status') == 0) {
+            return $query->where('status', 0);
         }
 
         $seller = request('seller');

@@ -69,7 +69,7 @@
                     @foreach($products as $product)
                         <tr role="row" class="">
                             <td><a href="">{{ $product->priority }}</a></td>
-                            <td width="80"><img src="{{asset('/storage/' . $product->image)}}" width="80"></td>
+                            <td><img width="80px" src="{{ asset('storage/'.$product->image) }}"></td>
                             <td><a href="">{{ $product->title }}</a></td>
                             <td><a href="">{{ $product->seller->name }}</a></td>
                             <td>{{ $product->price }} (تومان)</td>

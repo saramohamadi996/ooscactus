@@ -121,12 +121,13 @@
                         </div>
                         <div class="course-teacher-details">
                             <div class="top-part">
-                                <a href="{{ route('singleTutor', $product->seller->username) }}">
+                                <a href="{{ route('singleTutor', auth()->user(), $product->seller->username) }}">
                                     <img alt="{{$product->seller->name}}" class="img-fluid lazyloaded" src="{{$product->sellerImage}}" loading="lazy">
                                     <noscript><img class="img-fluid" src="{{$product->seller->sellerImage}}" alt="{{$product->seller->name}}"></noscript>
                                 </a>
+
                                 <div class="name">
-                                    <a href="{{ route('singleTutor', $product->seller->username) }}">
+                                    <a href="{{ route('singleTutor', auth()->user(), $product->seller->username) }}">
                                         <h6>{{$product->seller->name}}</h6>
                                     </a>
                                     <span class="job-title">{{$product->seller->headline}}</span>
@@ -179,7 +180,7 @@
                     </div>
                 </div>
             </div>
-            @include('Front::layout.productComment')
+            @include("Front::comments.index", ["commentable" => $product])
         </div>
     </main>
 @endsection

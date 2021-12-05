@@ -14,8 +14,8 @@
                 <div class="d-flex multi-text">
                     <x-input name="title" placeholder="عنوان محصول" type="text" value="{{ $product->title }}"/>
 
-                    <x-input type="text" name="slug" placeholder="نام پیوند(مفید برای سئو)" value="{{ $product->slug }}"
-                             class="text"/>
+{{--                    <x-input type="text" name="slug" placeholder="نام پیوند(مفید برای سئو)" value="{{ $product->slug }}"--}}
+{{--                             class="text"/>--}}
                 </div>
                 <x-input name="meta_description" placeholder="توضیح مختصر (مفید برای سئو) " type="text"
                          value="{{ $product->meta_description }}"/>

@@ -1,19 +1,17 @@
 <?php
 
 namespace Milano\Front\Http\Controllers;
+
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
 use Milano\Article\Models\Article;
-use Milano\Article\Repositories\ArticleRepo;
-use Milano\Category\Repositories\CategoryRepo;
-use Milano\Comment\Models\Comment;
+use Milano\Article\Repositories\ArticleRepository;
+use Milano\Category\Repositories\CategoryRepository;
 use Milano\Product\Models\Product;
-use Milano\Product\Repositories\ProductRepo;
+use Milano\Product\Repositories\ProductRepository;
 use Milano\RolePermissions\Models\Permission;
 use Milano\Setting\Models\Setting;
-use Milano\Slideshow\Models\Slideshow;
 use Milano\User\Models\User;
 use Milano\User\Repositories\UserRepo;
 use Milano\User\Rules\ValidMobile;
@@ -33,58 +31,63 @@ class FrontController
 
         if ($request->search) {
             $searchProducts = Product::when($request->search, function ($query, $search) {
-                return $query->whereHas('category' , function ($query) use ($search) {
-                    $query->where('title' , 'LIKE' , "%{$search}%");
-                })->orWhere('title', 'LIKE' , "%{$search}%");
+                return $query->whereHas('category', function ($query) use ($search) {
+                    $query->where('title', 'LIKE', "%{$search}%");
+                })->orWhere('title', 'LIKE', "%{$search}%");
             })->latest()->paginate(8);
 
             $searchArticles = Article::when($request->search, function ($query, $search) {
-                return $query->whereHas('categories' , function ($query) use ($search) {
-                    $query->where('title' , 'LIKE' , "%{$search}%");
-                })->orWhere('title', 'LIKE' , "%{$search}%");
+                return $query->whereHas('categories', function ($query) use ($search) {
+                    $query->where('title', 'LIKE', "%{$search}%");
+                })->orWhere('title', 'LIKE', "%{$search}%");
             })->latest()->paginate(8);
         }
-        return view('Front::search' , compact('searchProducts' , 'searchArticles'));
+        return view('Front::search', compact('searchProducts', 'searchArticles'));
     }
 
-    public function allProducts(CategoryRepo  $categoryRepo , UserRepo $userRepo, ProductRepo $productRepo)
+    public function allProducts(CategoryRepository $categoryRepo, UserRepo $userRepo, ProductRepository $productRepo)
     {
+        $category_id = [];
         $sellers = $userRepo->getSellers();
-        $categories = $categoryRepo->all();
+        $categories = $categoryRepository->getAll($category_id);
         $products = Product::filter()->latest()->paginate(12);
-        return view('Front::products.product-list' , compact('products' , 'categories' , 'sellers'));
+        return view('Front::products.product-list', compact('products', 'categories', 'sellers'));
     }
 
-   public function allArticles()
+    public function allArticles()
     {
         $articles = Article::paginate(12);
-        return view('Front::articles.article-list' , compact('articles'));
+        return view('Front::articles.article-list', compact('articles'));
     }
 
-    public function singleProduct($slug, ProductRepo $productRepo)
+    public function singleProduct($slug, ProductRepository $productRepository)
     {
         $ads = Ads::accepted()->where('page', 'single-product')->get();
-        $productId = Str::before(
-            Str::after($slug, 'c-'), '-');
-        $product = $productRepo->findByid($productId);
+        $productId = $this->extractId($slug, 'c');
+        $product = $productRepository->getById($productId);
         return view('Front::singleProduct', compact('product', 'ads'));
     }
 
-    public function singleArticle($slug, ArticleRepo $articleRepo)
+    public function extractId($slug, $key)
+    {
+        return Str::before(Str::after($slug, $key . '-'), '-');
+    }
+
+    public function singleArticle($slug, ArticleRepository $articleRepo)
     {
         $ads = Ads::accepted()->where('page', 'single-article')->get();
         $article = Str::before(Str::after($slug, 'c1-'), '-');
-        $article = $articleRepo->findByid($article);
+        $article = $articleRepo->getById($article);
         $article->increment('viewCount');
         return view('Front::singleArticle', compact('article', 'ads'));
     }
 
-    public function productComment(Product $product , Request $request)
+    public function productComment(Product $product, Request $request)
     {
         $product->comments()->create([
             'body' => $request->body,
             'user_id' => auth()->id(),
-            'parent_id' =>$request->parent_id,
+            'parent_id' => $request->parent_id,
         ]);
         return response()->json(['success' => 'عملیات با موفقیت انجام شد']);
     }
@@ -112,15 +115,15 @@ class FrontController
             'name' => 'required',
             'nationalCode' => 'required',
             'email' => 'required|email',
-            'mobile' => ['required', 'string', 'max:14', 'unique:users' , new ValidMobile()],
+            'mobile' => ['required', 'string', 'max:14', 'unique:users', new ValidMobile()],
             'shop' => 'required',
             'telegram' => 'nullable',
             'products' => 'required',
             'Address' => 'required',
         ]);
-        Mail::send('Sellers::message',[
+        Mail::send('Sellers::message', [
             'msg' => $request->message
-        ], function($mail)use ($request){
+        ], function ($mail) use ($request) {
             $mail->from($request->email, $request->name);
             $mail->to('test@yahoo.com')->subject('Seller Message');
         });

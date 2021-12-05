@@ -136,13 +136,14 @@ class ProductController extends Controller
      * @return RedirectResponse
      * @throws AuthorizationException
      */
-    public function update($id, Request $request)
+    public function update($id, ProductUpdateRequest $request)
     {
         $product = $this->product_repository->getById($id);
-        $input = $request->only('seller_id', 'category_id', 'title', 'meta_description', 'slug', 'priority',
+        $input = $request->only('seller_id', 'category_id', 'title', 'meta_description',  'priority',
             'price', 'seller_share', 'body', 'image', 'stock', 'code_product', 'is_enabled');
         if ($request->hasFile('images')) {
             try {
+                Storage::disk('public')->delete($product->image);
                 foreach ($request->images as $image) {
                     $product->images()->create([
                         'src' => $image->store("photos/Product/", 'public'),
@@ -153,7 +154,7 @@ class ProductController extends Controller
                 Log::error($ex->getMessage());
             }
         }
-        $result = $this->product_repository->update($input, $id);
+        $result = $this->product_repository->update($input, $product);
         if (!$result) {
             return redirect()->back()->with('error', 'بروزرسانی محصول با مشکل مواجه شد');
         }
@@ -191,13 +192,12 @@ class ProductController extends Controller
     {
         $product = $this->product_repository->getById($id);
         $input = ['is_enabled' => !$product->is_enabled];
-        $result = $this->product_repository->update($input, $id);
+        $result = $this->product_repository->update($input, $product);
         if (!$result) {
             return redirect()->back()->with('error', 'فعالسازی با مشکل مواجه شد');
         }
         return redirect()->back()->with('success', 'فعال شد');
     }
-
 
     /**
      * enable banner
@@ -208,7 +208,7 @@ class ProductController extends Controller
     {
         $product = $this->product_repository->getById($id);
         $input = ['status' => !$product->status];
-        $result = $this->product_repository->update($input, $id);
+        $result = $this->product_repository->update($input, $product);
         if (!$result) {
             return redirect()->back()->with('error', 'فعالسازی با مشکل مواجه شد');
         }

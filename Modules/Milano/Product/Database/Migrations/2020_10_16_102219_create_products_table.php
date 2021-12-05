@@ -1,4 +1,5 @@
 <?php
+
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -18,7 +19,7 @@ class CreateProductsTable extends Migration
             $table->string('meta_description');
             $table->string('slug');
             $table->float('priority')->unique();
-            $table->string('price',10);
+            $table->string('price', 10);
             $table->string('seller_share', 5);
             $table->integer('stock');
             $table->string('code_product')->unique();

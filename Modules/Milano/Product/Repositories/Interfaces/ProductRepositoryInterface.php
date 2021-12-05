@@ -46,7 +46,7 @@ interface ProductRepositoryInterface
      * @param int $id
      * @return bool
      */
-    public function update(array $values, int $id):bool;
+    public function update(array $values, Product $product):bool;
 
     /**
      * Remove the specified resource from storage.

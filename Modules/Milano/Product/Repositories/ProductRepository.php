@@ -118,9 +118,8 @@ class ProductRepository implements ProductRepositoryInterface
      * @param int $id
      * @return bool
      */
-    public function update(array $value, int $id): bool
+    public function update(array $value, Product $product): bool
     {
-        $product = $this->getById($id);
         if (isset($value['status'])) {
             $product->status = $value['status'];
         }
@@ -139,9 +138,9 @@ class ProductRepository implements ProductRepositoryInterface
         if (isset($value['meta_description'])) {
             $product->meta_description = $value['meta_description'];
         }
-        if (isset($value['slug'])) {
-            $product->slug = Str::slug($value['slug']);
-        }
+//        if (isset($value['slug'])) {
+//            $product->slug = Str::slug($value['slug']);
+//        }
         if (isset($value['priority'])) {
             $product->priority = $value['priority'];
         }
@@ -187,4 +186,23 @@ class ProductRepository implements ProductRepositoryInterface
         }
         return true;
     }
+
+//    public function updateConfirmationStatus($id)
+//    {
+//        $product->update(['confirmation_status' => Product::CONFIRMATION_STATUS_ACCEPTED]);return $product;
+//    }
+//    public function latestProducts()
+//    {
+//        return Product::where('confirmation_status', Product::CONFIRMATION_STATUS_ACCEPTED)->latest()->take(8)->get();
+//    }
+//    public function accept($id)
+//    {
+//        $product = $this->findByid($id);
+//        return $product->update(['confirmation_status' => Product::CONFIRMATION_STATUS_ACCEPTED]);
+//    }
+//    public function reject($id)
+//    {
+//        $product = $this->findByid($id);
+//        return $product->update(['confirmation_status' => Product::CONFIRMATION_STATUS_REJECTED]);
+//    }
 }
