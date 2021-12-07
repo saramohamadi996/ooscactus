@@ -11,6 +11,7 @@
                     <div class="h-t">
                         <h1 class="title">{{$product->title}}</h1>
                         <div class="breadcrumb">
+
                             <ul>
                                 <li><a href="/" title="خانه">خانه</a></li>
                                 @if($product->category->parentCategory)

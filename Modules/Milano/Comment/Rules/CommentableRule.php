@@ -12,7 +12,6 @@ class CommentableRule implements Rule
         //
     }
 
-
     public function passes($attribute, $value)
     {
         return class_exists($value) && method_exists($value, "comments");

@@ -12,6 +12,8 @@ use Milano\Payment\Models\Settlement;
 use Milano\Product\Models\ImageProduct;
 use Milano\Product\Models\Product;
 use Milano\RolePermissions\Models\Role;
+use Milano\Ticket\Models\Reply;
+use Milano\Ticket\Models\Ticket;
 use Spatie\Permission\Traits\HasRoles;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 use Illuminate\Notifications\Notifiable;
@@ -111,7 +113,7 @@ class User extends Authenticatable implements JWTSubject
         return $this->username ? route('viewProfile', $this->username) : route('viewProfile', 'username');
     }
 
-    public function getuserImageAttribute()
+    public function getUserImageAttribute()
     {
         if ($this->image) {
             return '/storage/' . $this->image;

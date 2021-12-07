@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class Comment extends Model
 {
+    protected $guarded = [];
+
     const STATUS_NEW = "new";
     const STATUS_APPROVED = "approved";
     const STATUS_REJECTED = "rejected";
@@ -16,8 +18,6 @@ class Comment extends Model
         self::STATUS_APPROVED,
         self::STATUS_NEW
     ];
-
-    protected $guarded = [];
 
     public function commentable()
     {

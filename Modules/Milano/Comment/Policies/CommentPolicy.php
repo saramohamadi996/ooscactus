@@ -19,7 +19,6 @@ class CommentPolicy
     {
         if ($user->hasAnyPermission(Permission::PERMISSION_MANAGE_COMMENTS, Permission::PERMISSION_SELL))
             return true;
-
         return null;
     }
 
@@ -28,7 +27,6 @@ class CommentPolicy
         if ($user->hasPermissionTo(Permission::PERMISSION_MANAGE_COMMENTS) ||
             $user->id == $comment->commentable->teacher_id)
             return true;
-
         return null;
     }
 }

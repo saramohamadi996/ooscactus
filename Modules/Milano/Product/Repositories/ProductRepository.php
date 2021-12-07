@@ -14,6 +14,11 @@ use Milano\Product\Models\Product;
 
 class ProductRepository implements ProductRepositoryInterface
 {
+    /**
+     * get products by seller id.
+     * @param int $id
+     * @return mixed
+     */
     public function getProductsBySellerId(int $id)
     {
         return Product::where('seller_id', $id)->get();
@@ -28,22 +33,19 @@ class ProductRepository implements ProductRepositoryInterface
     {
         return Product::query()
             ->when(isset($input['title']), function (Builder $query) use ($input) {
-                $query->orWhere('title', 'like', '%' . $input['title'] . '%');
+                $query->where('title', 'like', '%' . $input['title'] . '%');
+            })
+            ->when(isset($input['price']), function (Builder $query) use ($input) {
+                $query->where('price', '%' . $input['price'] . '%');
             })
             ->when(isset($input['code_product']), function (Builder $query) use ($input) {
                 $query->where('code_product', '=', $input['code_product']);
             })
-            ->when(isset($input['price']), function (Builder $query) use ($input) {
-                $query->where('price', '=', $input['price']);
-            })
-            ->when(isset($input['priority']), function (Builder $query) use ($input) {
-                $query->where('priority', '=', $input['priority']);
+            ->when(isset($input['category_id']), function (Builder $query) use ($input) {
+                $query->where('category_id', '=', $input['category_id']);
             })
             ->when(isset($input['seller_id']), function (Builder $query) use ($input) {
                 $query->where('seller_id', '=', $input['seller_id']);
-            })
-            ->when(isset($input['category_id']), function (Builder $query) use ($input) {
-                $query->where('category_id', '=', $input['category_id']);
             });
     }
 
@@ -59,7 +61,7 @@ class ProductRepository implements ProductRepositoryInterface
     }
 
     /**
-     * find by id the record with the given id.
+     * returns all products.
      * @return Collection
      */
     public function getAll(): Collection
@@ -68,7 +70,7 @@ class ProductRepository implements ProductRepositoryInterface
     }
 
     /**
-     * find by id the record with the given id.
+     * get by id the record with the given id.
      * @param int $id
      * @return Builder|Builder[]|Collection|Model|Product
      */
@@ -186,23 +188,4 @@ class ProductRepository implements ProductRepositoryInterface
         }
         return true;
     }
-
-//    public function updateConfirmationStatus($id)
-//    {
-//        $product->update(['confirmation_status' => Product::CONFIRMATION_STATUS_ACCEPTED]);return $product;
-//    }
-//    public function latestProducts()
-//    {
-//        return Product::where('confirmation_status', Product::CONFIRMATION_STATUS_ACCEPTED)->latest()->take(8)->get();
-//    }
-//    public function accept($id)
-//    {
-//        $product = $this->findByid($id);
-//        return $product->update(['confirmation_status' => Product::CONFIRMATION_STATUS_ACCEPTED]);
-//    }
-//    public function reject($id)
-//    {
-//        $product = $this->findByid($id);
-//        return $product->update(['confirmation_status' => Product::CONFIRMATION_STATUS_REJECTED]);
-//    }
 }

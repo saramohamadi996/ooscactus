@@ -15,11 +15,9 @@ class CommentServiceProvider extends ServiceProvider
     {
         $this->loadMigrationsFrom(__DIR__ . "/../Database/Migrations");
         $this->loadViewsFrom(__DIR__ . "/../Resources/Views", "Comments");
-        Route::middleware(['web', 'auth'])
-            ->namespace($this->namespace)
+        Route::middleware(['web', 'auth'])->namespace($this->namespace)
             ->group(__DIR__ . "/../Routes/comments_routes.php");
         $this->loadJsonTranslationsFrom(__DIR__ . "/../Resources/Lang");
-
         Gate::policy(Comment::class, CommentPolicy::class);
     }
 

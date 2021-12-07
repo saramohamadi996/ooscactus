@@ -28,6 +28,8 @@ class ProductStoreRequest extends FormRequest
             "seller_id" => ['nullable', 'exists:users,id', new ValidSeller()],
             "category_id" => 'nullable|exists:categories,id',
             "image" => "nullable|mimes:jpg,png,jpeg",
+            "status"=>"nullable|bool",
+            "is_enabled"=>"nullable|bool",
         ];
     }
 
@@ -42,10 +44,11 @@ class ProductStoreRequest extends FormRequest
             "code_product" => "کد محصول",
             "percent" => "درصد فروشنده",
             "seller_id" => "فروشنده",
-            "status" => "وضعیت",
             "category_id" => "دسته بندی",
             "body" => "توضیحات",
             "image" => "تصویر محصول",
+            "status" => "وضعیت",
+            "is_enabled" => "وضعیت تایید",
         ];
     }
 }

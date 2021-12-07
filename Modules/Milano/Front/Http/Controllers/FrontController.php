@@ -8,17 +8,53 @@ use Illuminate\Support\Str;
 use Milano\Article\Models\Article;
 use Milano\Article\Repositories\ArticleRepository;
 use Milano\Category\Repositories\CategoryRepository;
+use Milano\Category\Repositories\Interfaces\CategoryRepositoryInterface;
 use Milano\Product\Models\Product;
+use Milano\Product\Repositories\Interfaces\ProductRepositoryInterface;
 use Milano\Product\Repositories\ProductRepository;
 use Milano\RolePermissions\Models\Permission;
 use Milano\Setting\Models\Setting;
 use Milano\User\Models\User;
+use Milano\User\Repositories\Interfaces\UserRepositoryInterface;
 use Milano\User\Repositories\UserRepo;
 use Milano\User\Rules\ValidMobile;
 use Milano\Ads\Models\Ads;
 
 class FrontController
 {
+    /**
+     * The category repository instance.
+     * @var ProductRepositoryInterface
+     */
+    protected ProductRepositoryInterface $product_repository;
+
+    /**
+     * The category repository instance.
+     * @var CategoryRepositoryInterface
+     */
+    protected CategoryRepositoryInterface $category_repository;
+
+    /**
+     * The category repository instance.
+     * @var UserRepositoryInterface
+     */
+    protected UserRepositoryInterface $user_repository;
+
+    /**
+     * ProductController constructor.
+     * @param ProductRepositoryInterface $product_repository
+     * @param CategoryRepositoryInterface $category_repository
+     * @param UserRepositoryInterface $user_repository
+     */
+    public function __construct(ProductRepositoryInterface $product_repository,
+                                CategoryRepositoryInterface $category_repository,
+                                UserRepositoryInterface $user_repository)
+    {
+        $this->product_repository = $product_repository;
+        $this->category_repository = $category_repository;
+        $this->user_repository = $user_repository;
+    }
+
     public function index()
     {
         $ads = Ads::accepted()->where('page', 'home')->get();
@@ -45,11 +81,11 @@ class FrontController
         return view('Front::search', compact('searchProducts', 'searchArticles'));
     }
 
-    public function allProducts(CategoryRepository $categoryRepo, UserRepo $userRepo, ProductRepository $productRepo)
+    public function allProducts(UserRepo $userRepo)
     {
         $category_id = [];
+        $categories = $this->category_repository->getAll($category_id);
         $sellers = $userRepo->getSellers();
-        $categories = $categoryRepository->getAll($category_id);
         $products = Product::filter()->latest()->paginate(12);
         return view('Front::products.product-list', compact('products', 'categories', 'sellers'));
     }

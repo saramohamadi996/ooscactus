@@ -16,7 +16,7 @@ class ProductServiceProvider extends ServiceProvider
      * Register any application services.
      * Introducing different parts of the module to Laravel application.
      */
-    public function register()
+    public function register():void
     {
         $this->loadRoutesFrom(__DIR__ . '/../Routes/Products_routes.php');
         $this->loadViewsFrom(__DIR__ . '/../Resources/Views', 'Products');
@@ -29,7 +29,7 @@ class ProductServiceProvider extends ServiceProvider
     /**
      * Display details of menu items in the sidebar, such as name, icon and url.
      */
-    public function boot()
+    public function boot():void
     {
         $this->app->bind(ProductRepositoryInterface::class, ProductRepository::class);
         config()->set('sidebar.items.products', [

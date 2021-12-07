@@ -5,6 +5,7 @@ namespace Milano\Product\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Milano\Category\Models\Category;
 use Milano\Order\Models\Order;
@@ -81,6 +82,9 @@ class Product extends Model
     ];
 
 
+    /**
+     * @return HasMany
+     */
     public function images()
     {
         return $this->hasMany(ImageProduct::class, 'product_id');
@@ -96,7 +100,7 @@ class Product extends Model
     }
 
     /**
-     * Get the parent category that owns the product.
+     * Get the category for the product.
      * @return BelongsTo
      */
     public function category()
@@ -105,7 +109,7 @@ class Product extends Model
     }
 
     /**
-     * Get the parent seller that owns the product.
+     * Get the seller for the product.
      * @return BelongsTo
      */
     public function seller()
@@ -130,6 +134,10 @@ class Product extends Model
     public function comments()
     {
         return $this->morphMany(Comment::class, 'commentable');
+    }
+    public function approvedComments()
+    {
+        return $this->morphMany(Comment::class, 'commentable')->where("status", Comment::STATUS_APPROVED);
     }
 
     /**

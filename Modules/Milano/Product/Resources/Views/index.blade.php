@@ -3,9 +3,10 @@
     <li><a href="{{ route('products.index') }}" title="محصولات ">محصولات </a></li>
 @endsection
 @section('content')
+
     <div class="tab__box">
         <div class="tab__items">
-            <a class="tab__item is-active" href="#">لیست محصولات</a>
+            <a class="tab__item is-active" href="{{ route("products.index") }}">لیست محصولات</a>
             <a class="tab__item" href="{{ route('products.create') }}">ایجاد محصول جدید</a>
         </div>
     </div>
@@ -16,30 +17,36 @@
                 <div class="t-header-search">
 
                     <form action="{{route('products.index')}}" method="get" class="">
-                    @csrf
+                        @csrf
                         <div class="t-header-searchbox font-size-13">
                             <input type="text" class="text search-input__box font-size-13" placeholder="جستجوی محصول">
                             <div class="t-header-search-content">
 
-                                <select name="seller_id">
-                                    <option value="">انتخاب فروشنده محصول</option>
+                                <select name="category_id">
+                                    <option value="">انتخاب دسته بندی محصول</option>
                                     @foreach($categories as $category)
-                                        <option value="{{ $category->id }}">{{ $category->title }}</option>
+                                        <option value="{{$category->id}}">
+                                            {{$category->title}}
+                                        </option>
                                     @endforeach
                                 </select>
 
                                 <select name="seller_id">
                                     <option value="">انتخاب فروشنده محصول</option>
                                     @foreach($sellers as $seller)
-                                        <option value="{{ $seller->id }}">{{ $seller->name }}</option>
+                                        <option value="{{$seller->id}}">
+                                            {{$seller->name}}
+                                        </option>
                                     @endforeach
                                 </select>
 
                                 <input type="text" class="text" name="title" placeholder="نام محصول">
                                 <input type="text" class="text" name="code_product" placeholder="کد محصول">
-                                <input type="text" class="text" name="priority" value="{{ request("priority") }}" placeholder="ردیف">
-                                <input type="text" class="text" name="price" value="{{ request("price") }}" placeholder="قیمت">
-                                <button type="submit" class="btn btn-webamooz_net" id="update-profile" >جستجو</button>
+                                <input type="text" class="text" name="priority" value="{{ request("priority") }}"
+                                       placeholder="ردیف">
+                                <input type="text" class="text" name="price" value="{{ request("price") }}"
+                                       placeholder="قیمت">
+                                <button type="submit" class="btn btn-webamooz_net" id="update-profile">جستجو</button>
                             </div>
                         </div>
                     </form>
@@ -55,13 +62,13 @@
                         <th>عنوان</th>
                         <th>فروشنده</th>
                         <th>قیمت</th>
-{{--                        <th>برچسب ها</th>--}}
+                        {{--                        <th>برچسب ها</th>--}}
                         <th>موجودی</th>
                         <th>کد محصول</th>
                         @can(Milano\RolePermissions\Models\Permission::PERMISSION_MANAGE_PRODUCTS)
-                        <th>وضعیت</th>
-                        <th>وضعیت تایید</th>
-                        <th>عملیات</th>
+                            <th>وضعیت</th>
+                            <th>وضعیت تایید</th>
+                            <th>عملیات</th>
                         @endcan
                     </tr>
                     </thead>
@@ -73,7 +80,7 @@
                             <td><a href="">{{ $product->title }}</a></td>
                             <td><a href="">{{ $product->seller->name }}</a></td>
                             <td>{{ $product->price }} (تومان)</td>
-{{--                            <td><a href="">{{$product->tag_name}}</a></td>--}}
+                            {{--                            <td><a href="">{{$product->tag_name}}</a></td>--}}
                             <td><a href="">{{$product->stock }}</a></td>
                             <td><a href="">{{$product->code_product }}</a></td>
                             @can(Milano\RolePermissions\Models\Permission::PERMISSION_MANAGE_PRODUCTS)

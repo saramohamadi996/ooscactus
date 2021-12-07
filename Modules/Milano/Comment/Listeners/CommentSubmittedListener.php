@@ -8,7 +8,6 @@ class CommentSubmittedListener
 {
     /**
      * Create the event listener.
-     *
      * @return void
      */
     public function __construct()
@@ -18,7 +17,6 @@ class CommentSubmittedListener
 
     /**
      * Handle the event.
-     *
      * @param object $event
      * @return void
      */

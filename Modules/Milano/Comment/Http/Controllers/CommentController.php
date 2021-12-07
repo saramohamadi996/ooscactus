@@ -22,15 +22,12 @@ class CommentController extends Controller
             ->searchEmail(request("email"))
             ->searchName(request("name"))
             ->searchStatus(request("status"));
-
         if (!auth()->user()->hasAnyPermission(Permission::PERMISSION_MANAGE_COMMENTS, Permission::PERMISSION_SUPER_ADMIN)) {
-            $comments->query->whereHasMorph("commentable", [Product::class] , function ($query) {
-                return $query->where("teacher_id", auth()->id());
+            $comments->query->whereHasMorph("commentable", [Product::class], function ($query) {
+                return $query->where("seller_id", auth()->id());
             })->where("status", Comment::STATUS_APPROVED);
         }
-
         $comments = $comments->paginateParents();
-
         return view("Comments::index", compact("comments"));
     }
 
@@ -45,7 +42,7 @@ class CommentController extends Controller
     {
         $comment = $repo->store($request->all());
         event(new CommentSubmittedEvent($comment));
-        newFeedback("عملیات موفقیت آمیز", "دیدگاه شما با ثبت گردید.");
+//        newFeedback("عملیات موفقیت آمیز", "دیدگاه شما با ثبت گردید.");
         return back();
     }
 

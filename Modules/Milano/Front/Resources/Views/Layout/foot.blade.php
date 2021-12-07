@@ -7,7 +7,9 @@
 <script type="text/javascript" src="/js/jquery-2.1.3.min.js"></script>
 <script type="text/javascript" src="/js/smoothproducts.min.js"></script>
 <script type="text/javascript">
-    $(window).load(function() {$('.sp-wrap').smoothproducts();});
+    $(window).load(function () {
+        $('.sp-wrap').smoothproducts();
+    });
 </script>
 <script>@include('Common::layouts.feedbacks')</script>
 @yield('js')

@@ -66,10 +66,10 @@ class ProductController extends Controller
     public function index(ProductAllRequest $request)
     {
         $category_id=[];
+        $categories = $this->category_repository->getAll($category_id);
         $input = $request->only(['title', 'priority', 'price', 'code_product', 'seller_id', 'category_id',]);
         $products = $this->product_repository->paginate($input);
         $sellers = $this->user_repository->getSellers();
-        $categories = $this->category_repository->getAll($category_id);
 
         $this->authorize('index', $products);
         return view('Products::index', compact('products', 'categories','sellers' ));

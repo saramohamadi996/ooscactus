@@ -15,14 +15,14 @@ class CreateProductsTable extends Migration
             $table->unsignedBigInteger('seller_id')->unsigned();
             $table->unsignedBigInteger('category_id')->unsigned()->nullable();
             $table->string('image')->nullable();
-            $table->string('title')->unique();
+            $table->string('title');
             $table->string('meta_description');
             $table->string('slug');
-            $table->float('priority')->unique();
+            $table->float('priority');
             $table->string('price', 10);
             $table->string('seller_share', 5);
             $table->integer('stock');
-            $table->string('code_product')->unique();
+            $table->string('code_product');
             $table->boolean('status')->default('1');
             $table->boolean('is_enabled')->default('0');
             $table->longText('body')->nullable();

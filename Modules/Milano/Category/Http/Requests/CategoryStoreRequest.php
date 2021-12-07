@@ -6,11 +6,19 @@ use Illuminate\Foundation\Http\FormRequest;
 
 class CategoryStoreRequest extends FormRequest
 {
+    /**
+     * Determine if the user is authorized to make this request.
+     * @return bool
+     */
     public function authorize()
     {
         return auth()->check() == true;
     }
 
+    /**
+     * Get the validation rules that apply to the request.
+     * @return string[]
+     */
     public function rules()
     {
         return [
@@ -20,6 +28,10 @@ class CategoryStoreRequest extends FormRequest
         ];
     }
 
+    /**
+     * Translate request verification attributes.
+     * @return array|string[]
+     */
     public function attributes()
     {
         return[

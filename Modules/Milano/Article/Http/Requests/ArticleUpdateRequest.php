@@ -4,18 +4,21 @@ namespace Milano\Article\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class ArticleRequest extends FormRequest
+class ArticleUpdateRequest extends FormRequest
 {
     /**
-     * @var mixed
+     * Determine if the user is authorized to make this request.
+     * @return bool
      */
-//    private $category_id;
-
     public function authorize()
     {
         return auth()->check() == true;
     }
 
+    /**
+     * Get the validation rules that apply to the request.
+     * @return string[]
+     */
     public function rules()
     {
         return $rules = [
@@ -23,10 +26,14 @@ class ArticleRequest extends FormRequest
             'slug' => 'nullable|min:3|max:250',
             'category_id' => 'nullable|exists:categories,id',
             'image' => 'nullable|mimes:jpg,jpeg,png',
-            'body' => 'nullable',
+            'body' => 'nullable|min:3|string',
         ];
     }
 
+    /**
+     * Translate request verification attributes.
+     * @return array|string[]
+     */
     public function attributes()
     {
         return [

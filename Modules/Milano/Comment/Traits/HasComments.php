@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Concerns\HasRelationships;
 trait HasComments
 {
     use HasRelationships;
+
     public function comments()
     {
         return $this->morphMany(Comment::class, 'commentable');

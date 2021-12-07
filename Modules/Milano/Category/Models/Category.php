@@ -33,13 +33,14 @@ class Category extends Model
      */
     public $timestamps = false;
 
-    /**define Category's fallible fields.
+    /**
+     * define Category's fallible fields.
      * @var string[]
      */
     protected $fillable = ['title', 'slug', 'parent_id'];
 
     /**
-     * define Category's casts
+     * define Category's casts.
      * @var string[]
      */
     protected $casts = ['parent_id' => 'integer', 'title' => 'string', 'slug' => 'string'];

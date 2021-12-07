@@ -4,7 +4,7 @@ namespace Milano\Article\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class GetAllRequest extends FormRequest
+class ArticleStoreRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -22,8 +22,11 @@ class GetAllRequest extends FormRequest
     public function rules()
     {
         return $rules = [
-            'title' => 'nullable|min:3|max:250',
-            'category_id' => 'nullable|exists:categories,id',
+            'title' => 'required|min:3|max:250',
+            'slug' => 'required|min:3|max:250',
+            'category_id' => 'required|exists:categories,id',
+            'image' => 'nullable|mimes:jpg,jpeg,png',
+            'body' => 'nullable|min:3|string',
         ];
     }
 
@@ -35,7 +38,10 @@ class GetAllRequest extends FormRequest
     {
         return [
             "title" => "عنوان مقاله",
+            "slug" => "نام پیوند",
             "category_id" => "دسته بندی ",
+            "body" => "توضیحات",
+            "image" => "تصویر مقاله",
         ];
     }
 }

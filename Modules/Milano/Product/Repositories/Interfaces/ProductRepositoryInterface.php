@@ -54,4 +54,5 @@ interface ProductRepositoryInterface
      * @return bool
      */
     public function delete(Product $product): bool;
+
 }

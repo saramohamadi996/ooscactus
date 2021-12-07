@@ -11,7 +11,11 @@ use Milano\RolePermissions\Models\Permission;
 
 class ArticleServiceProvider extends ServiceProvider
 {
-    public function register()
+    /**
+     * Register any application services.
+     * Introducing different parts of the module to Laravel application.
+     */
+    public function register():void
     {
         $this->loadRoutesFrom(__DIR__. '/../Routes/articles_routes.php');
         $this->loadViewsFrom(__DIR__. '/../Resources/Views', 'Articles');
@@ -21,7 +25,10 @@ class ArticleServiceProvider extends ServiceProvider
         Gate::policy(Article::class,ArticlePolicy::class);
     }
 
-    public function boot()
+    /**
+     * Display details of menu items in the sidebar, such as name, icon and url.
+     */
+    public function boot():void
     {
         $this->app->bind(ArticleRepositoryInterface::class, ArticleRepository::class);
         config()->set('sidebar.items.articles', [

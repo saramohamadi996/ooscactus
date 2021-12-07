@@ -19,7 +19,7 @@ interface CategoryRepositoryInterface
      * @param int $per_page
      * @return LengthAwarePaginator
      */
-    public function paginate(int $per_page = 10): LengthAwarePaginator;
+    public function paginate(int $per_page = 20): LengthAwarePaginator;
 
     /**
      * Get the value from the database.
