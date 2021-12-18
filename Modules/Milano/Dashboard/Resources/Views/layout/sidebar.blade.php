@@ -10,10 +10,10 @@
                   auth()->user()->hasAnyPermission($sidebarItem['permission']) ||
                   auth()->user()->hasPermissionTo(\Milano\RolePermissions\Models\Permission::PERMISSION_SUPER_ADMIN))
 
-{{--                <li class="item-li {{$sidebarItem['icon']}}--}}
-{{--                @if(str_starts_with(request()->url() , $sidebarItem['url'])) is-active @endif">--}}
-{{--                    <a href="{{$sidebarItem['url']}}">{{$sidebarItem['title']}}</a>--}}
-{{--                </li>--}}
+                <li class="item-li {{$sidebarItem['icon']}}
+                @if(str_starts_with(request()->url() , $sidebarItem['url'])) is-active @endif">
+                    <a href="{{$sidebarItem['url']}}">{{$sidebarItem['title']}}</a>
+                </li>
             @endif
         @endforeach
     </ul>

@@ -1,25 +1,45 @@
-@extends('User::front.maste')
+@extends('User::Front.master')
+
 @section('content')
-    <div class="form">
-        <a class="account-logo" href="/">
-            <img src="/storage/{{\Milano\Setting\Models\Setting::first()->logo ?? ''}}"
-                 alt="{{\Milano\Setting\Models\Setting::first()->title ?? ''}}">
-        </a>
-        <div class="form-content form-account">
+    <div class="account act">
+        <form action="{{ route('verification.verify') }}" class="form" method="post">
+            @csrf
+            <a class="account-logo" href="/">
+                <img src="/img/weblogo.png" alt="">
+            </a>
+            <div class="card-header">
+                <p class="activation-code-title">کد فرستاده شده به ایمیل  <span>{{ auth()->user()->email }}</span>
+                    را وارد کنید . ممکن است ایمیل به پوشه spam فرستاده شده باشد.
+                    ایمیلتان را اشتباه وارد کرده اید؟ <a href="{{ route('users.profile') }}"> برای ویرایش ایمیل کلیک کنید</a>.
+                </p>
+            </div>
+            <div class="form-content form-content1">
+                <input name="verify_code" required class="activation-code-input" placeholder="فعال سازی">
+                @error('verify_code')
+                <span class="invalid-feedback" role="alert">
+                    <strong>{{ $message }}</strong>
+                </span>
+                @enderror
+                <br>
+                <button class="btn i-t">تایید</button>
+                <a href="#" onclick="
+                event.preventDefault();
+                document.getElementById('resend-code').submit()
+                ">ارسال مجدد کد فعالسازی</a>
 
-            <div class="card-header">تایید حساب کاربری</div>
+            </div>
+            <div class="form-footer">
+                <a href="{{ route('register') }}">صفحه ثبت نام</a>
+            </div>
+        </form>
 
-            @if (session('resent'))
-                <div class="alert alert-success" role="alert">
-                    یک ایمیل جدید برای شما ارسال شد.
-                </div>
-            @endif
-            ایمیل فعالسازی حساب برای شما ارسال شده است.
-            لطفا قبل از ادامه ایمیل خود را چک کنید.اگر ایمیل دریافت نکرده بودید روی دکمه ارسال مجدد کلیک کنید
-            <form class="d-inline" method="POST" action="{{ route('verification.resend') }}">
-                @csrf
-                <button type="submit" class="btn btn-link p-0 m-0 align-baseline">ارسال مجدد</button>
-                <a href="/"> بازگشت به صفحه اصلی</a>
-            </form>
-        </div>
+        <form id="resend-code" action="{{ route('verification.resend') }}" method="post">
+            @csrf
+        </form>
+    </div>
+@endsection
+
+@section('js')
+    <script src="/js/jquery-3.4.1.min.js"></script>
+    <script src="/js/activation-code.js"></script>
 @endsection

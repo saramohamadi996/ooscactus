@@ -2,14 +2,18 @@
 
 namespace Milano\Product\Models;
 
+use Milano\Discount\Models\Discount;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Milano\Category\Models\Category;
+use Milano\Discount\Repositories\DiscountRepository;
+use Milano\Discount\Services\DiscountService;
 use Milano\Order\Models\Order;
 use Milano\Payment\Models\Payment;
+use Milano\Product\Repositories\ProductRepository;
 use Milano\User\Models\User;
 use Milano\Comment\Models\Comment;
 use Milano\Cart\Models\Cart;
@@ -135,9 +139,20 @@ class Product extends Model
     {
         return $this->morphMany(Comment::class, 'commentable');
     }
+
     public function approvedComments()
     {
         return $this->morphMany(Comment::class, 'commentable')->where("status", Comment::STATUS_APPROVED);
+    }
+
+    public function discounts()
+    {
+        return $this->morphToMany(Discount::class, "discountable");
+    }
+
+    public function getDuration()
+    {
+        return (new ProductRepository())->getDuration($this->id);
     }
 
     /**
@@ -183,17 +198,59 @@ class Product extends Model
 
     public function getDiscountPercent()
     {
+        $discount = $this->getDiscount();
+        if ($discount) return $discount->percent;
         return 0;
     }
-
-    public function getDiscountAmount()
+    public function formattedDuration()
     {
-        return 0;
+        $duration = $this->getDuration();
+        $h = round($duration / 60) < 10 ? '0' . round($duration / 60) : round($duration / 60);
+        $m = ($duration % 60) < 10 ? '0' . ($duration % 60) : ($duration % 60);
+        return $h . ':' . $m . ":00";
     }
 
-    public function getFinalPrice()
+    public function getDiscount()
     {
-        return $this->price - $this->getDiscountAmount();
+        $discount_repository = new DiscountRepository();
+        $discount = $discount_repository->getProductBiggerDiscount($this->id);
+        $globalDiscount = $discount_repository->getGlobalBiggerDiscount();
+        if ($discount == null && $globalDiscount == null) return null;
+        if ($discount == null && $globalDiscount != null) return $globalDiscount;
+        if ($discount != null && $globalDiscount == null) return $discount;
+        if ($globalDiscount->percent > $discount->percent) return $globalDiscount;
+        return $discount;
+    }
+
+    public function getDiscountAmount($percent = null)
+    {
+        if ($percent == null) {
+            $discount = $this->getDiscount();
+            $percent = $discount ? $discount->percent : 0;
+        }
+        return DiscountService::calculateDiscountAmount($this->price, $percent);
+    }
+
+    public function getFinalPrice($code = null, $withDiscounts = false)
+    {
+        $discount = $this->getDiscount();
+        $amount = $this->price;
+        $discounts = [];
+        if ($discount) {
+            $discounts [] = $discount;
+            $amount = $this->price - $this->getDiscountAmount($discount->percent);
+        }
+        if ($code) {
+            $discount_repository = new DiscountRepository();
+            $discountFromCode = $discount_repository->getValidDiscountByCode($code, $this->id);
+            if ($discountFromCode) {
+                $discounts [] = $discountFromCode;
+                $amount = $amount - DiscountService::calculateDiscountAmount($amount, $discountFromCode->percent);
+            }
+        }
+        if ($withDiscounts)
+            return [$amount, $discounts];
+        return $amount;
     }
 
     public function getFormattedFinalPrice()

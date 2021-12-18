@@ -24,7 +24,7 @@ use Milano\User\Repositories\Interfaces\UserRepositoryInterface;
 class ProductController extends Controller
 {
     /**
-     * The category repository instance.
+     * The product repository instance.
      * @var ProductRepositoryInterface
      */
     protected ProductRepositoryInterface $product_repository;
@@ -36,7 +36,7 @@ class ProductController extends Controller
     protected CategoryRepositoryInterface $category_repository;
 
     /**
-     * The category repository instance.
+     * The user repository instance.
      * @var UserRepositoryInterface
      */
     protected UserRepositoryInterface $user_repository;

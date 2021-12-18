@@ -1,4 +1,3 @@
-
 @extends('Front::layout.master')
 @section('content')
 
@@ -21,7 +20,7 @@
                                     </li>
                                 @endif
                                 <li><a href="{{$product->category->path()}}"
-                                title="{{$product->category->title}}">{{$product->category->title}}</a></li>
+                                       title="{{$product->category->title}}">{{$product->category->title}}</a></li>
                             </ul>
                         </div>
                     </div>
@@ -32,28 +31,37 @@
                     <div class="sidebar-sticky" style="top: 155px;">
                         <div class="product-info-box">
                             @if($product->coupon != null)
-                            <div class="discountBadge"><p>{{ $product->coupon }}%</p>تخفیف</div>
+                                <div class="discountBadge">
+                                    <p>{{ $product->coupon }}%</p>
+                                    تخفیف
+                                </div>
                             @endif
                             @auth
                                 @if(auth()->id() == $product->seller_id)
                                     <p class="mycourse">شما فروشنده این محصول هستید</p>
                                 @elseif($product->stock <= 0 )
-                                        <p>محصول موجود نمی باشد</p>
+                                    <p>محصول موجود نمی باشد</p>
                                 @else
                                     <div class="sell_course">
                                         <strong>قیمت :</strong>
-                                        @if($product->coupon != null)
-                                        <p class="price">
-                                <span class="woocommerce-Price-amount amount">{{ number_format($product->price) }}
-                                <span class="woocommerce-Price-currencySymbol">تومان</span>
-                                </span>
-                                        </p>
-                                            <dev class="discount-Price">{{number_format($product->price * ((100-$product->coupon)/100))}}</dev>
+
+                                        @if($product->getDiscount())
+                                            <del class="discount-Price">{{ $product->getFormattedPrice() }}</del>
+                                            {{--                                        @endif--}}
+                                            <p class="price">
+
+                                                {{-- <span class="woocommerce-Price-amount amount">{{ number_format($product->price) }}--}}
+                                                <span class="woocommerce-Price-amount amount">{{ $product->getFormattedFinalPrice() }}
+                                                <span class="woocommerce-Price-currencySymbol">تومان</span>
+                                            </span>
+                                            </p>
+                                            <dev
+                                                class="discount-Price">{{number_format($product->price * ((100-$product->coupon)/100))}}</dev>
                                         @else
                                             <div class="wooco" style="padding-right: 50px">
-                                            {{ number_format($product->price) }}
-                                            <span class="woocommerce-Price-currencySymbol">تومان</span>
-                                        </div>
+                                                {{ number_format($product->price) }}
+                                                <span class="woocommerce-Price-currencySymbol">تومان</span>
+                                            </div>
                                         @endif
                                     </div>
                                     @error('addtocart')
@@ -72,24 +80,34 @@
                             @else
                                 <div class="sell_course">
                                     <strong>قیمت :</strong>
-                                    <del class="discount-Price">{{$product->getFormattedPrice()}}</del>
+
+                                    @if($product->getDiscount())
+                                        <del class="discount-Price">{{ $product->getFormattedPrice() }}</del>
+                                    @endif
+
                                     <p class="price">
-                                <span class="woocommerce-Price-amount amount">{{$product->getFormattedPrice()}}
-                                <span class="woocommerce-Price-currencySymbol">تومان</span>
-                                </span>
+                                        <span class="woocommerce-Price-amount amount">{{ $product->getFormattedPrice() }}
+                                            <span class="woocommerce-Price-currencySymbol">تومان</span>
+                                        </span>
                                     </p>
                                 </div>
+
                                 <p>جهت خرید محصول ابتدا در سایت لاگین کنید</p>
                                 <a href="{{ route('login')}}" class="btn text-white w-100">ورود به سایت</a>
                             @endauth
                             <div class="average-rating-sidebar">
                                 <div class="rating-stars">
                                     <div class="slider-rating">
-                                        <span class="slider-rating-span slider-rating-span-100" data-value="100%" data-title="خیلی خوب"></span>
-                                        <span class="slider-rating-span slider-rating-span-80" data-value="80%" data-title="خوب"></span>
-                                        <span class="slider-rating-span slider-rating-span-60" data-value="60%" data-title="معمولی"></span>
-                                        <span class="slider-rating-span slider-rating-span-40" data-value="40%" data-title="بد"></span>
-                                        <span class="slider-rating-span slider-rating-span-20" data-value="20%" data-title="خیلی بد"></span>
+                                        <span class="slider-rating-span slider-rating-span-100" data-value="100%"
+                                              data-title="خیلی خوب"></span>
+                                        <span class="slider-rating-span slider-rating-span-80" data-value="80%"
+                                              data-title="خوب"></span>
+                                        <span class="slider-rating-span slider-rating-span-60" data-value="60%"
+                                              data-title="معمولی"></span>
+                                        <span class="slider-rating-span slider-rating-span-40" data-value="40%"
+                                              data-title="بد"></span>
+                                        <span class="slider-rating-span slider-rating-span-20" data-value="20%"
+                                              data-title="خیلی بد"></span>
                                         <div class="star-fill"></div>
                                     </div>
                                 </div>
@@ -107,24 +125,29 @@
                         <div class="product-info-box">
                             <div class="product-meta-info-list">
                                 <div class="meta-info-unit four">
-                                    <span class="title">فروشنده محصول : </span><span class="vlaue">{{$product->seller->name}}</span>
+                                    <span class="title">فروشنده محصول : </span><span
+                                        class="vlaue">{{$product->seller->name}}</span>
                                 </div>
                                 <div class="meta-info-unit seven">
                                     <span class="title">کد محصول :</span><span class="vlaue">{{$product->stock}}</span>
                                 </div>
                                 <div class="meta-info-unit two">
-                                    <span class="title">وضعیت محصول : </span><span class="vlaue">@lang($product->status)</span>
+                                    <span class="title">وضعیت محصول : </span><span
+                                        class="vlaue">@lang($product->status)</span>
                                 </div>
                                 <div class="meta-info-unit five">
-                                    <span class="title">تعداد محصول :</span><span class="vlaue">{{$product->stock}}</span>
+                                    <span class="title">تعداد محصول :</span><span
+                                        class="vlaue">{{$product->stock}}</span>
                                 </div>
                             </div>
                         </div>
                         <div class="course-teacher-details">
                             <div class="top-part">
                                 <a href="{{ route('singleTutor', auth()->user(), $product->seller->username) }}">
-                                    <img alt="{{$product->seller->name}}" class="img-fluid lazyloaded" src="{{$product->sellerImage}}" loading="lazy">
-                                    <noscript><img class="img-fluid" src="{{$product->seller->sellerImage}}" alt="{{$product->seller->name}}"></noscript>
+                                    <img alt="{{$product->seller->name}}" class="img-fluid lazyloaded"
+                                         src="{{$product->sellerImage}}" loading="lazy">
+                                    <noscript><img class="img-fluid" src="{{$product->seller->sellerImage}}"
+                                                   alt="{{$product->seller->name}}"></noscript>
                                 </a>
 
                                 <div class="name">
@@ -139,7 +162,8 @@
                         <div class="short-link">
                             <div class="">
                                 <span>لینک کوتاه</span><input class="short--link" value="{{$product->shortUrl()}}">
-                                <a href="{{$product->shortUrl()}}" class="short-link-a" data-link="{{$product->shortUrl()}}"></a>
+                                <a href="{{$product->shortUrl()}}" class="short-link-a"
+                                   data-link="{{$product->shortUrl()}}"></a>
                             </div>
                         </div>
                     </div>
@@ -155,21 +179,21 @@
                             @endforeach
                         </div>
                     </div>
-                <div class="course-description">
-                    <div class="course-description-title">توضیحات محصول</div>
-                    {!! $product->body !!}
-                    <div class="tags">
-                        <ul>
-                            <li><a href="">کاکتوس بذری</a></li>
-                            <li><a href="">کاکتوس تیغی</a></li>
-                            <li><a href=""> ساکولنت</a></li>
-                            <li><a href="">کاکتوس تزیینی</a></li>
-                            <li><a href="">کاکتوس </a></li>
-                            <li><a href="">گل های آپارتمانی</a></li>
-                        </ul>
+                    <div class="course-description">
+                        <div class="course-description-title">توضیحات محصول</div>
+                        {!! $product->body !!}
+                        <div class="tags">
+                            <ul>
+                                <li><a href="">کاکتوس بذری</a></li>
+                                <li><a href="">کاکتوس تیغی</a></li>
+                                <li><a href=""> ساکولنت</a></li>
+                                <li><a href="">کاکتوس تزیینی</a></li>
+                                <li><a href="">کاکتوس </a></li>
+                                <li><a href="">گل های آپارتمانی</a></li>
+                            </ul>
+                        </div>
                     </div>
                 </div>
-            </div>
 
                 <div class="sidebar-right">
                     <div class="sidebar-sticky" style="top: 155px;">
@@ -186,8 +210,8 @@
     </main>
 @endsection
 @section('js')
-<script>
-    var $easyzoom = $('.easyzoom').easyZoom();
-</script>
+    <script>
+        var $easyzoom = $('.easyzoom').easyZoom();
+    </script>
 @endsection
 

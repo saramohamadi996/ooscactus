@@ -4,13 +4,12 @@ namespace Milano\User\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Providers\RouteServiceProvider;
-use Illuminate\Support\Str;
 use Milano\User\Models\User;
+use Milano\User\Rules\ValidMobile;
+use Milano\User\Rules\ValidPassword;
 use Illuminate\Foundation\Auth\RegistersUsers;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
-use Milano\User\Rules\ValidMobile;
-use Milano\User\Rules\ValidPassword;
 
 class RegisterController extends Controller
 {
@@ -32,8 +31,7 @@ class RegisterController extends Controller
      *
      * @var string
      */
-//    protected $redirectTo = RouteServiceProvider::HOME;
-    protected $redirectTo = '/';
+    protected $redirectTo = RouteServiceProvider::HOME;
 
     /**
      * Create a new controller instance.
@@ -56,10 +54,11 @@ class RegisterController extends Controller
         return Validator::make($data, [
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
-            'mobile' => ['nullable', 'string', 'max:14', 'unique:users' , new ValidMobile()],
-            'password' => ['required', 'string', 'min:8', 'confirmed' , new ValidPassword()],
+            'mobile' => ['nullable', 'string', 'min:9' , 'max:14', 'unique:users', new ValidMobile()],
+            'password' => ['required', 'string', 'confirmed', new ValidPassword()],
         ]);
     }
+
     /**
      * Create a new user instance after a valid registration.
      *
@@ -72,10 +71,10 @@ class RegisterController extends Controller
             'name' => $data['name'],
             'email' => $data['email'],
             'mobile' => $data['mobile'],
-            'username' => Str::before($data['email'] , '@'),
             'password' => Hash::make($data['password']),
         ]);
     }
+
     public function showRegistrationForm()
     {
         return view('User::Front.register');

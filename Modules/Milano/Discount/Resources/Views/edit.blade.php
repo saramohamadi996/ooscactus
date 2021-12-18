@@ -1,4 +1,4 @@
-@extends("Dashboard::master")
+@extends("Dashboard::maste")
 
 @section("content")
     <div class="col-4 bg-white">
@@ -15,16 +15,16 @@
             <x-validation-error field='type'/>
             <div class="notificationGroup">
                 <input id="discounts-field-1" class="discounts-field-pn" name="type" value="all" type="radio" {{ $discount->type == \Milano\Discount\Models\Discount::TYPE_ALL ? "checked" : "" }}/>
-                <label for="discounts-field-1">همه دوره ها</label>
+                <label for="discounts-field-1">همه محصولات</label>
             </div>
             <div class="notificationGroup">
                 <input id="discounts-field-2" class="discounts-field-pn" name="type" value="special" type="radio" {{ $discount->type == \Milano\Discount\Models\Discount::TYPE_SPECIAL ? "checked" : "" }}/>
-                <label for="discounts-field-2">دوره خاص</label>
+                <label for="discounts-field-2">محصول خاص</label>
             </div>
             <div id="selectCourseContainer" class="{{ $discount->type == \Milano\Discount\Models\Discount::TYPE_ALL ? "d-none" : "" }}">
-                <select name="courses[]" class="mySelect2" placeholder="klsdjf" multiple>
-                    @foreach($courses as $course)
-                        <option value="{{ $course->id }}" {{ $discount->courses->contains($course->id) ? "selected" : "" }}>{{ $course->title }}</option>
+                <select name="products[]" class="mySelect2" placeholder="klsdjf" multiple>
+                    @foreach($products as $product)
+                        <option value="{{ $product->id }}" {{ $discount->products->contains($product->id) ? "selected" : "" }}>{{ $product->title }}</option>
                     @endforeach
                 </select>
             </div>
@@ -45,7 +45,7 @@
         });
 
         $('.mySelect2').select2({
-            placeholder: "یک یا چند دوره را انتخاب کنید..."
+            placeholder: "یک یا چند محصول را انتخاب کنید..."
         });
     </script>
 

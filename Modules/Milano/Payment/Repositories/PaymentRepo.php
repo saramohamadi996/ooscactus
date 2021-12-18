@@ -23,45 +23,15 @@ class PaymentRepo
     {
         return Payment::findOrFail($id);
     }
-    public static function generate($amount, $paymentable, User $buyer, $orderId)
-    {
-        if ($amount <= 0 || is_null($paymentable->id) || is_null($buyer->id)) return false;
-        $gateway = resolve(Gateway::class);
-        $invoiceId = $gateway->request($amount, $paymentable->id);
-        if (is_array($invoiceId)) {
-            // todo
-            dd($invoiceId);
-        }
-        $site_share=0;
-        $seller_p=0;
-        $seller_share=0;
-        foreach($paymentable->orderItems as $item) {
-            $k=$item->pivot->total_price*($item->seller_share/100);
-            $site_share+=($item->pivot->total_price-$k);
-            $seller_share+=$k;
-        }
-        $ref = Str::random(16);
-        return resolve(PaymentRepo::class)->store([
-            "invoice_id" => $invoice->id,
-            "order_id" => $order->id,
-            "buyer_id" => $buyer->id,
-            "paymentable_id" => $paymentable->id,
-            "paymentable_type" => get_class($paymentable),
-            "seller_p" => $seller_p, "seller_share" => $seller_share,
-            "site_share" => $site_share, "amount" => $amount,
-            "gateway" => $gateway->getName(),
-            "status" => Payment::STATUS_PENDING,
-            "ref_num" => $ref,
-        ]);
-        return Order::where('id' ,$orderId);
-    }
+
     public function findByInvoiceId($invoiceId)
     {
         return Payment::where('invoice_id', $invoiceId)->first();
     }
-    public function store($data)
+
+    public function store($data, $discounts = [])
     {
-        return Payment::create([
+        $payment = Payment::create([
             "order_id"  => $data['order_id'],
             "buyer_id" => $data['buyer_id'],
             "paymentable_id" => $data['paymentable_id'],
@@ -73,6 +43,12 @@ class PaymentRepo
             "seller_p" => $data['seller_p'], "seller_share" => $data['seller_share'],
             "site_share" => $data['site_share'], "ref_num" => $data['ref_num'],
         ]);
+
+        foreach ($discounts as $discount) $discountIds[] = $discount->id;
+
+        if (isset($discountIds))
+            $payment->discounts()->sync($discountIds);
+        return $payment;
     }
 
     public function changeStatus($id, string $status)

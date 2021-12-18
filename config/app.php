@@ -201,6 +201,7 @@ return [
         Milano\Seller\Providers\SellerServiceProvider::class,
         Milano\Baner\Providers\BanerServiceProvider::class,
         Milano\Order\Providers\OrderServiceProvider::class,
+        Milano\Payment\Providers\PaymentServiceProvider::class,
     ],
 
     /*

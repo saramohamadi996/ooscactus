@@ -14,6 +14,28 @@ use Milano\Product\Models\Product;
 
 class ProductRepository implements ProductRepositoryInterface
 {
+    private function getProductQuery($id)
+    {
+        return Product::where('product_id', $id)->where('is_enabled', '=', 1);
+    }
+
+    public function getDuration($id)
+    {
+        return $this->getProductQuery($id)->sum('time');
+    }
+
+    /**
+     * returns all products.
+     * @param string|null $status
+     * @return Builder[]|Collection
+     */
+    public function getAll(string $status = null):Collection
+    {
+        $query = $this->fetchQueryBuilder();
+        if ($status) $query->where("is_enabled", $status);
+        return $query->latest()->get();
+    }
+
     /**
      * get products by seller id.
      * @param int $id
@@ -60,14 +82,6 @@ class ProductRepository implements ProductRepositoryInterface
         return $this->fetchQueryBuilder($input)->paginate($per_page);
     }
 
-    /**
-     * returns all products.
-     * @return Collection
-     */
-    public function getAll(): Collection
-    {
-        return $this->fetchQueryBuilder()->get();
-    }
 
     /**
      * get by id the record with the given id.

@@ -8,11 +8,11 @@ use Milano\User\Models\User;
 
 class PaymentService
 {
-    public static function generate($amount, $paymentable, User $buyer, $order_id)
+    public static function generate($amount, $paymentable, User $buyer, $order_id, $seller_id = null, $discounts = [])
     {
         if ($amount <= 0 || is_null($paymentable->id) || is_null($buyer->id)) return false;
         $gateway = resolve(Gateway::class);
-        $invoiceId = $gateway->request($amount, $paymentable->id);
+        $invoiceId = $gateway->request($amount, $paymentable->title);
         if (is_array($invoiceId)) {
             // todo
             dd($invoiceId);
@@ -27,11 +27,13 @@ class PaymentService
             $seller_share+=$k;
         }
         $ref = Str::random(16);
+
         return resolve(PaymentRepo::class)->store([
             "order_id" => $order_id,
             "buyer_id" => $buyer->id,
             "paymentable_id" => $paymentable->id,
             "paymentable_type" => get_class($paymentable),
+            "seller_id" => $seller_id,
             "seller_p" => $seller_p,
             "seller_share" => $seller_share,
             "site_share" => $site_share,
@@ -40,6 +42,6 @@ class PaymentService
             "gateway" => $gateway->getName(),
             "status" => Payment::STATUS_PENDING,
             "ref_num" => $ref,
-        ]);
+        ],$discounts);
     }
 }

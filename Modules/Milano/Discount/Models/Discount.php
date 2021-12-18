@@ -18,7 +18,7 @@ class Discount extends Model
     protected $casts = [
         "expire_at" => "datetime"
     ];
-    public function courses()
+    public function products()
     {
         return $this->morphedByMany(Product::class, "discountable");
     }

@@ -118,7 +118,6 @@ class CategoryRepository implements CategoryRepositoryInterface
         return Category::where('parent_id', null)->with('subCategories')->get();
     }
 
-    //
     public function latestProducts()
     {
         return Product::where('is_enabled', '=', 1)->latest()->take(8)->get();

@@ -1,4 +1,4 @@
-@extends('Dashboard::master')
+@extends('Dashboard::maste')
 @section('breadcrumb')
     <li><a href="{{ route('discounts.index') }}" title="تخفیف ها">تخفیف ها</a></li>
 @endsection
@@ -23,15 +23,18 @@
                             <tbody>
                             <tr role="row" class="">
                                 @foreach($discounts as $discount)
-                                <td><a href="">{{ $discount->code ?? "-" }}</a></td>
-                                <td><a href="">{{ $discount->percent }}%</a> برای @lang($discount->type)</td>
-                                <td>{{ $discount->expire_at ? createFromCarbon($discount->expire_at) : "بدون تاریخ انقضا" }}</td>
-                                <td>{{ $discount->description }}</td>
-                                <td>{{ $discount->uses }} نفر</td>
-                                <td>
-                                    <a href="" onclick="deleteItem(event, '{{ route('discounts.destroy', $discount->id) }}')" class="item-delete mlg-15" title="حذف"></a>
-                                    <a href="{{ route("discounts.edit", $discount->id) }}" class="item-edit " title="ویرایش"></a>
-                                </td>
+                                    <td><a href="">{{ $discount->code ?? "-" }}</a></td>
+                                    <td><a href="">{{ $discount->percent }}%</a> برای @lang($discount->type)</td>
+                                    <td>{{ $discount->expire_at ? Morilog\Jalali\Jalalian::fromCarbon($discount->expire_at) : "بدون تاریخ انقضا" }}</td>
+                                    <td>{{ $discount->description }}</td>
+                                    <td>{{ $discount->uses }} نفر</td>
+                                    <td>
+                                        <a href=""
+                                           onclick="deleteItem(event, '{{ route('discounts.destroy', $discount->id) }}')"
+                                           class="item-delete mlg-15" title="حذف"></a>
+                                        <a href="{{ route("discounts.edit", $discount->id) }}" class="item-edit "
+                                           title="ویرایش"></a>
+                                    </td>
                             </tr>
                             @endforeach
                             </tbody>
@@ -44,28 +47,27 @@
                 <form action="{{ route("discounts.store") }}" method="post" class="padding-30">
                     @csrf
                     <x-input type="text" placeholder="کد تخفیف" name="code"/>
-                    <x-input type="number" placeholder="درصد تخفیف" name="percent" required />
-                    <x-input type="number" placeholder="محدودیت افراد" name="usage_limitation" />
-                    <x-input type="text" id="expire_at" placeholder="محدودیت زمانی به ساعت" name="expire_at" />
+                    <x-input type="number" placeholder="درصد تخفیف" name="percent" required/>
+                    <x-input type="number" placeholder="محدودیت افراد" name="usage_limitation"/>
+                    <x-input type="text" id="expire_at" placeholder="محدودیت زمانی به ساعت" name="expire_at"/>
                     <p class="box__title">این تخفیف برای</p>
                     <x-validation-error field='type'/>
                     <div class="notificationGroup">
                         <input id="discounts-field-1" class="discounts-field-pn" name="type" value="all" type="radio"/>
-                        <label for="discounts-field-1">همه دوره ها</label>
+                        <label for="discounts-field-1">همه محصولات</label>
                     </div>
                     <div class="notificationGroup">
                         <input id="discounts-field-2" class="discounts-field-pn" name="type" value="special" type="radio"/>
-                        <label for="discounts-field-2">دوره خاص</label>
+                        <label for="discounts-field-2">محصول خاص</label>
                     </div>
-                    <div id="selectCourseContainer" class="d-none">
-                        <select name="courses[]" class="mySelect2" placeholder="klsdjf" multiple>
-                            @foreach($courses as $course)
-                                <option value="{{ $course->id }}">{{ $course->title }}</option>
+                        <select name="products[]" class="mySelect2" placeholder="انتخاب محصول" id="selectCourseContainer" multiple="multiple">
+                            @foreach($products as $product)
+                                <option  value="{{ $product->id }}">{{ $product->title }}</option>
                             @endforeach
                         </select>
-                    </div>
-                    <x-input type="text" name="link" placeholder="لینک اطلاعات بیشتر" />
-                    <x-input type="text" name="description" placeholder="توضیحات" class="margin-bottom-15" />
+
+                    <x-input type="text" name="link" placeholder="لینک اطلاعات بیشتر"/>
+                    <x-input type="text" name="description" placeholder="توضیحات" class="margin-bottom-15"/>
 
                     <button type="submit" class="btn btn-webamooz_net">اضافه کردن</button>
                 </form>
@@ -83,7 +85,7 @@
         });
 
         $('.mySelect2').select2({
-            placeholder: "یک یا چند دوره را انتخاب کنید..."
+            placeholder: "یک یا چند محصول را انتخاب کنید..."
         });
     </script>
 
@@ -91,5 +93,5 @@
 
 @section("css")
     <link rel="stylesheet" href="/assets/persianDatePicker/css/persianDatepicker-default.css">
-    <link href="/css/select2.min.css" rel="stylesheet" />
+    <link href="/css/select2.min.css" rel="stylesheet"/>
 @endsection

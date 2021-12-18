@@ -1,5 +1,5 @@
 
-<div id="Modal2" class="modal">
+<div id="Modal2" class="modal1">
     <div class="modal-content">
         <div class="modal-header">
             <p>ارسال پاسخ</p>

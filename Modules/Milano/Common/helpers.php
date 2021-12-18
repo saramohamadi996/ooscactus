@@ -38,6 +38,11 @@ function getJalaliFromFormat($date, $format = "Y-m-d")
  * @param \Carbon\Carbon $carbon
  * @return Jalalian
  */
+//function createFromCarbon(Carbon\Carbon $carbon)
+//{
+//    return Jalalian::fromCarbon($carbon);
+//}
+
 function createFromCarbon(Carbon\Carbon $carbon)
 {
     return Jalalian::fromCarbon($carbon);

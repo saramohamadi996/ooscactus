@@ -13,7 +13,7 @@
         "laravel/tinker": "^2.5",
         "laravel/ui": "^3.3",
         "livewire/livewire": "^2.7",
-        "morilog/jalali": "^3.2",
+        "morilog/jalali": "3.*",
         "spatie/laravel-permission": "^5.4",
         "tymon/jwt-auth": "^1.0",
         "kavenegar/laravel-notification": "^1.0"

@@ -4,42 +4,49 @@ namespace Milano\Discount\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use Milano\Common\Responses\AjaxResponses;
-use Milano\Course\Models\Course;
-use Milano\Course\Repositories\CourseRepo;
 use Milano\Discount\Http\Requests\DiscountRequest;
 use Milano\Discount\Models\Discount;
-use Milano\Discount\Repositories\DiscountRepo;
+use Milano\Discount\Repositories\Interfaces\DiscountRepositoryInterface;
 use Milano\Discount\Services\DiscountService;
+use Milano\Product\Repositories\Interfaces\ProductRepositoryInterface;
 
 class DiscountController extends Controller
 {
-    public function index(CourseRepo $courseRepo, DiscountRepo $repo)
+    protected ProductRepositoryInterface $product_repository;
+protected DiscountRepositoryInterface $discount_repository;
+    public function __construct(ProductRepositoryInterface $product_repository,
+                                DiscountRepositoryInterface $discount_repository)
+    {
+        $this->product_repository = $product_repository;
+        $this->discount_repository = $discount_repository;
+    }
+    public function index()
     {
         $this->authorize("manage", Discount::class);
-        $discounts = $repo->paginateAll();
-        $courses = $courseRepo->getAll(Course::CONFIRMATION_STATUS_ACCEPTED);
-        return view("Discounts::index", compact("courses", "discounts"));
+        $discounts = $this->discount_repository->paginateAll();
+        $products = $this->product_repository->getAll();
+        return view("Discounts::index", compact("products", "discounts"));
     }
 
-    public function store(DiscountRequest $request, DiscountRepo $repo)
+    public function store(DiscountRequest $request)
     {
         $this->authorize("manage", Discount::class);
-        $repo->store($request->all());
-        newFeedback();
+        $this->discount_repository->store($request->all());
+//        newFeedback();
         return back();
     }
 
-    public function edit(Discount $discount, CourseRepo $courseRepo)
+    public function edit(Discount $discount)
     {
         $this->authorize("manage", Discount::class);
-        $courses = $courseRepo->getAll(Course::CONFIRMATION_STATUS_ACCEPTED);
-        return view("Discounts::edit", compact("discount", "courses"));
+        $products = $this->product_repository->getAll();
+        return view("Discounts::edit", compact("discount", "products"));
     }
 
-    public function update(Discount $discount, DiscountRequest $request, DiscountRepo $repo)
+    public function update(DiscountRequest $request)
     {
         $this->authorize("manage", Discount::class);
-        $repo->update($discount->id, $request->all());
+        $this->discount_repository->update($discount->id, $request->all());
         newFeedback();
         return redirect()->route("discounts.index");
 
@@ -52,24 +59,20 @@ class DiscountController extends Controller
         return AjaxResponses::SuccessResponse();
     }
 
-    public function check($code, Course $course, DiscountRepo $repo)
+    public function check($code)
     {
-
-        $discount = $repo->getValidDiscountByCode($code, $course->id);
+        $discount = $this->discount_repository->getValidDiscountByCode($code, $product->id);
         if ($discount){
-            $discountAmount = DiscountService::calculateDiscountAmount($course->getFinalPrice(), $discount->percent);
+            $discountAmount = DiscountService::calculateDiscountAmount($product->getFinalPrice(), $discount->percent);
             $discountPercent = $discount->percent;
             $response = [
                 "status" => "valid",
-                "payableAmount" => $course->getFinalPrice() - $discountAmount,
+                "payableAmount" => $product->getFinalPrice() - $discountAmount,
                 "discountAmount" => $discountAmount,
                 "discountPercent" => $discountPercent
             ];
             return response()->json($response);
         }
-
-        return \response()->json([
-            "status" => "invalid"
-        ])->setStatusCode(422);
+        return response()->json(["status" => "invalid"])->setStatusCode(422);
     }
 }

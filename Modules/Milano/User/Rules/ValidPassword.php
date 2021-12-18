@@ -13,7 +13,7 @@ class ValidPassword implements Rule
      */
     public function __construct()
     {
-        //
+
     }
 
     /**
@@ -25,7 +25,7 @@ class ValidPassword implements Rule
      */
     public function passes($attribute, $value)
     {
-        return preg_match('/^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$ %^&*-]).{8,}$/' , $value);
+        return preg_match('/^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$ %^&*-]).{6,}$/', $value);
     }
 
     /**
@@ -35,6 +35,6 @@ class ValidPassword implements Rule
      */
     public function message()
     {
-        return 'فرمت رمز عبور اشتباه است. رمز عبور باید ترکیبی از اعداد و حروف و  کاراکتر های غیر عددی باشد مانند : !@#$%^&*()';
+        return 'فرمت پسورد نامعتبر است.';
     }
 }

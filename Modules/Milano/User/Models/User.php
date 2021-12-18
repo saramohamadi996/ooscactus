@@ -2,59 +2,37 @@
 
 namespace Milano\User\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Milano\Cart\Models\Cart;
+use Illuminate\Support\Facades\DB;
 use Milano\Comment\Models\Comment;
-use Milano\Coupon\Models\Coupon;
-use Milano\Order\Models\Order;
+use Milano\Product\Models\Product;
 use Milano\Payment\Models\Payment;
 use Milano\Payment\Models\Settlement;
-use Milano\Product\Models\ImageProduct;
-use Milano\Product\Models\Product;
 use Milano\RolePermissions\Models\Role;
 use Milano\Ticket\Models\Reply;
 use Milano\Ticket\Models\Ticket;
-use Spatie\Permission\Traits\HasRoles;
-use Tymon\JWTAuth\Contracts\JWTSubject;
-use Illuminate\Notifications\Notifiable;
+use Milano\User\Notifications\ResetPasswordRequestNotification;
+use Milano\User\Notifications\VerifyMailNotification;
+use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\Notifiable;
+use Spatie\Permission\Traits\HasRoles;
 
-class User extends Authenticatable implements JWTSubject
+class User extends Authenticatable implements MustVerifyEmail
 {
     use Notifiable;
     use HasRoles;
     use HasFactory;
 
-    protected $table = 'users';
-
-    /**
-     * Get the identifier that will be stored in the subject claim of the JWT.
-     *
-     * @return mixed
-     */
-    public function getJWTIdentifier()
-    {
-        return $this->getKey();
-    }
-
-    /**
-     * Return a key value array, containing any custom claims to be added to the JWT.
-     *
-     * @return array
-     */
-    public function getJWTCustomClaims()
-    {
-        return [];
-    }
-
-    const STATUS_ACTIVE = "Active";
+    const STATUS_ACTIVE = "active";
     const STATUS_INACTIVE = "inactive";
     const STATUS_BAN = "ban";
     public static $statuses = [
         self::STATUS_ACTIVE,
-        self:: STATUS_INACTIVE,
-        self::STATUS_BAN,
+        self::STATUS_INACTIVE,
+        self::STATUS_BAN
     ];
+
     public static $defaultUsers = [
         [
             'email' => 'admin@site.com',
@@ -71,30 +49,51 @@ class User extends Authenticatable implements JWTSubject
         [
             'email' => 'customer@site.com',
             'password' => 'customer',
-            'name' => 'Customer',
+            'name' => 'Student',
             'role' => Role::ROLE_CUSTOMER
         ]
     ];
 
-
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array
+     */
     protected $fillable = [
-        'name', 'email', 'password', 'mobile', 'username'
+        'name', 'email', 'password', 'mobile'
     ];
 
+    /**
+     * The attributes that should be hidden for arrays.
+     *
+     * @var array
+     */
     protected $hidden = [
         'password', 'remember_token',
     ];
 
+    /**
+     * The attributes that should be cast to native types.
+     *
+     * @var array
+     */
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
 
-    /**
-     * Get the verify code associated with the user.
-     */
-    public function verifyCode()
+    public function sendEmailVerificationNotification()
     {
-        return $this->hasOne(VerifyCode::class);
+        $this->notify(new VerifyMailNotification());
+    }
+
+    public function sendResetPasswordRequestNotification()
+    {
+        $this->notify(new ResetPasswordRequestNotification());
+    }
+
+    public function image()
+    {
+        return $this->belongsTo(Media::class, 'image_id');
     }
 
     public function products()
@@ -102,34 +101,9 @@ class User extends Authenticatable implements JWTSubject
         return $this->hasMany(Product::class, 'seller_id');
     }
 
-    public function images()
+    public function purchases()
     {
-        return $this->belongsTo(ImageProduct::class, 'image_id');
-    }
-
-    public function profilePath()
-    {
-        return null;
-        return $this->username ? route('viewProfile', $this->username) : route('viewProfile', 'username');
-    }
-
-    public function getUserImageAttribute()
-    {
-        if ($this->image) {
-            return '/storage/' . $this->image;
-        } else {
-            return url('/img/profile.jpg');
-        }
-    }
-
-    public function carts()
-    {
-        return $this->hasMany(Cart::class);
-    }
-
-    public function order()
-    {
-        return $this->hasMany(Order::class);
+        return $this->belongsToMany(Product::class, 'product_user', 'user_id', 'product_id');
     }
 
     public function payments()
@@ -142,11 +116,6 @@ class User extends Authenticatable implements JWTSubject
         return $this->hasMany(Settlement::class);
     }
 
-    public function comments()
-    {
-        return $this->hasMany(Comment::class);
-    }
-
     public function tickets()
     {
         return $this->hasMany(Ticket::class);
@@ -155,6 +124,32 @@ class User extends Authenticatable implements JWTSubject
     public function ticketReplies()
     {
         return $this->hasMany(Reply::class);
+    }
+
+    public function comments()
+    {
+        return $this->hasMany(Comment::class);
+    }
+
+    public function profilePath()
+    {
+        return null;
+        return $this->username ? route('viewProfile', $this->username) : route('viewProfile', 'username');
+    }
+
+    public function getThumbAttribute()
+    {
+        if ($this->image)
+            return '/storage/' . $this->image->files[300];
+        return '/panel/img/profile.jpg';
+    }
+
+
+    public function customersCount()
+    {
+        return DB::table("products")
+            ->select("product_id")->where("seller_id", $this->id)
+            ->join("product_user", "products.id", "=", "product_user.product_id")->count();
     }
 
     public function routeNotificationForSms()

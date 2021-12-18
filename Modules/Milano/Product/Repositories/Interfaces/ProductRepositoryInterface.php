@@ -21,10 +21,11 @@ interface ProductRepositoryInterface
     public function paginate(array $input = [], int $per_page = 10): paginator;
 
     /**
-     * find by id the record with the given id.
-     * @return Collection
+     * returns all products.
+     * @param string|null $status
+     * @return Builder[]|Collection
      */
-    public function getAll(): Collection;
+    public function getAll(string $status = null);
 
     /**
      * find by id the record with the given id.

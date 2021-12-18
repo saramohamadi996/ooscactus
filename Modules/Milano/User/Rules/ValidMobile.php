@@ -25,7 +25,7 @@ class ValidMobile implements Rule
      */
     public function passes($attribute, $value)
     {
-        return preg_match('/^9[0-9]{9}$/' , $value);
+        return preg_match('/^9[0-9]{9}$/', $value);
     }
 
     /**
@@ -35,6 +35,6 @@ class ValidMobile implements Rule
      */
     public function message()
     {
-        return 'فرمت شماره موبایل اشتباه است. شماره موبایل باید با عدد 9 آغاز شود و یک شماره موبایل معتبر باشد.';
+        return 'فرمت موبایل نامعتبر است. شماره موبایل باید با 9 شروع بشود و بدون فاصله وارد شود.';
     }
 }

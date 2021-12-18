@@ -1,25 +1,32 @@
 <?php
+
 namespace Milano\User\Http\Requests;
 
-use Illuminate\Foundation\Http\FormRequest;
 use Milano\RolePermissions\Models\Permission;
 use Milano\User\Rules\ValidPassword;
+use Illuminate\Foundation\Http\FormRequest;
 
-class UpdateProfileInformationRequest extends FormRequest
+class UpdateProfileInformationRequest  extends FormRequest
 {
     public function authorize()
     {
         return auth()->check() == true;
     }
 
+    /**
+     * Get the validation rules that apply to the request.
+     *
+     * @return array
+     */
     public function rules()
     {
         $rules = [
             "name" => 'required|min:3|max:190',
             "email" => 'required|email|min:3|max:190|unique:users,email,' . auth()->id(),
             "username" => 'nullable|min:3|max:190|unique:users,username,' .  auth()->id(),
-            "mobile" => 'nullable|unique:users,mobile,' . auth()->id(),
+            "mobile" => 'nullable|unique:users,mobile,' . request()->route('user'),
             'password' => ['nullable', new ValidPassword()]
+
         ];
 
         if (auth()->user()->hasPermissionTo(Permission::PERMISSION_SELL)) {

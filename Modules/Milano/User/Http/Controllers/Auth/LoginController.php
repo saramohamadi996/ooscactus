@@ -1,7 +1,6 @@
 <?php
 
 namespace Milano\User\Http\Controllers\Auth;
-
 use App\Http\Controllers\Controller;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
@@ -27,8 +26,7 @@ class LoginController extends Controller
      *
      * @var string
      */
-//    protected $redirectTo = RouteServiceProvider::HOME;
-    protected $redirectTo = '/';
+    protected $redirectTo = RouteServiceProvider::HOME;
 
     /**
      * Create a new controller instance.
@@ -42,26 +40,19 @@ class LoginController extends Controller
 
     public function credentials(Request $request)
     {
-        if(is_numeric($request->get('email'))){
-            return [
-                'mobile'=> $request->get('email'),
-                'password' => $request->password
-            ];
-        }elseif(filter_var($request->get('email') , FILTER_VALIDATE_EMAIL)){
-            return [
-                'email'=> $request->get('email'),
-                'password' => $request->password
-            ];
-        }else{
+        $username = $request->get($this->username());
+
+        $field = filter_var($username, FILTER_VALIDATE_EMAIL) ? 'email' : 'mobile';
+
         return [
-            'username'=> $request->get('email'),
+            $field => $username,
             'password' => $request->password
-            ];
-        }
+        ];
     }
 
     public function showLoginForm()
     {
         return view('User::Front.login');
     }
+
 }

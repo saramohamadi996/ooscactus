@@ -11,7 +11,6 @@ class DiscountPolicy
 
     /**
      * Create a new policy instance.
-     *
      * @return void
      */
     public function __construct()

@@ -1,117 +1,126 @@
 <?php
+
 namespace Milano\User\Http\Controllers;
+
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
 use Milano\Common\Responses\AjaxResponses;
-use Milano\Product\Models\ImageProduct;
-//use Milano\Product\Models\Product;
-use Milano\Product\Repositories\ProductRepo;
-use Milano\RolePermissions\Models\Role;
+use Milano\Media\Services\MediaFileService;
 use Milano\RolePermissions\Repositories\RoleRepo;
-use Milano\User\Http\Requests\AddRoleRequest;
+use Milano\User\Http\Requests\UpdateProfileInformationRequest;
 use Milano\User\Http\Requests\UpdateUserPhoto;
 use Milano\User\Http\Requests\UpdateUserRequest;
+use Milano\User\Models\User;
 use Milano\User\Repositories\UserRepo;
-use Milano\User\Http\Requests\UpdateProfileInformationRequest;
 
 class UserController extends Controller
 {
-    private $Repo;
-    private $roleRepo;
-    private $productRepo;
-        public function __construct(UserRepo $userRepo, RoleRepo $roleRepo, ProductRepo $productRepo)
-    {
-        $this->Repo = $userRepo;
-        $this->roleRepo = $roleRepo;
-        $this->productRepo = $productRepo;
-    }
+    /**
+     * @var UserRepo
+     */
+    private $userRepo;
 
-    public function index(Request $request)
+    public function __construct(UserRepo $userRepo)
     {
-        $users = $this->Repo->searchName($request->name)
-            ->searchEmail($request->email)
-            ->searchMobile($request->mobile)->paginate();
-        $roles =  $this->roleRepo->all();
-        $this->authorize('index', $users);
+
+        $this->userRepo = $userRepo;
+    }
+    public function index(RoleRepo $roleRepo)
+    {
+        $this->authorize('index', User::class);
+        $users = $this->userRepo->paginate();
+        $roles = $roleRepo->all();
         return view("User::Admin.index", compact('users', 'roles'));
     }
 
-    public function edit($userId)
+    public function info($user, UserRepo $repo)
     {
-        $roles = $this->roleRepo->all();
-        $user = $this->Repo->findById($userId);
-        $products = $this->productRepo->getSellers();
-        $this->authorize('edit', $user);
-        return view("User::Admin.edit", compact('user', 'roles' ,'products'));
+        $this->authorize('index', User::class);
+        $user = $repo->FindByIdFullInfo($user);
+        return view("User::Admin.info", compact("user"));
+    }
+
+    public function edit($userId, RoleRepo $roleRepo)
+    {
+        $this->authorize('edit', User::class);
+        $user = $this->userRepo->findById($userId);
+        $roles = $roleRepo->all();
+        return view("User::Admin.edit", compact('user', 'roles'));
     }
 
     public function update(UpdateUserRequest $request, $userId)
     {
-        $user = $this->Repo->findByid($userId);
-        $this->authorize('edit', $user);
-        return redirect(route('users.index'));
-    }
+        $this->authorize('edit', User::class);
+        $user = $this->userRepo->findById($userId);
 
-    public function manualVerify($userId)
-    {
-        $user = $this->Repo->findById($userId);
-        $this->authorize('manualVerify', $user);
-        $user->markEmailAsVerified();
-        return AjaxResponses::SuccessResponse();
-    }
-
-    public function addRole(AddRoleRequest $request)
-    {
-        $user = $this->Repo;
-        $user->assignRole($request->role);
-        $this->authorize('addRole', $user);
-        newFeedback('موفقیت آمیز', " نقش کاربری {$request->role}
-         به کاربر {$user->name} داده شد.", 'success');
-        return back();
-    }
-
-    public function removeRole($userId, $role)
-    {
-         $user = $this->Repo->findById($userId);
-        $user->removeRole($role);
-        return AjaxResponses::SuccessResponse();
-    }
-
-    public function remove($id)
-    {
-        $user = $this->Repo->findOrFail($id);
-        $this->authorize('removeRole', $user);
-        if($user->image){
-            Storage::delete('public\\' . $user->image);
-            $user->image = null;
-            $user->save();
+        if ($request->hasFile('image')) {
+            $request->request->add(['image_id' => MediaFileService::publicUpload($request->file('image'))->id ]);
+            if ($user->banner)
+                $user->banner->delete();
+        }else{
+            $request->request->add(['image_id' => $user->image_id]);
         }
+
+        $this->userRepo->update($userId, $request);
+        newFeedback();
+        return redirect()->back();
+    }
+
+    public function updatePhoto(UpdateUserPhoto $request)
+    {
+        $this->authorize('editProfile', User::class);
+        $media = MediaFileService::publicUpload($request->file('userPhoto'));
+        if (auth()->user()->image) auth()->user()->image->delete();
+        auth()->user()->image_id = $media->id;
+        auth()->user()->save();
+        newFeedback();
+
         return back();
     }
 
     public function profile()
     {
+        $this->authorize('editProfile', User::class);
         return view('User::admin.profile');
     }
 
-    public function updateProfile(Request $request)
+    public function updateProfile(UpdateProfileInformationRequest $request)
     {
-        $user = $this->Repo->updateProfile($request);
+        $this->authorize('editProfile', User::class);
+        $this->userRepo->updateProfile($request);
+        newFeedback();
         return back();
-    }
 
-    public function updateImage(Request $request)
-    {
-        $user = $this->Repo->updateImage($request);
-        return back();
     }
 
     public function destroy($userId)
     {
-        $user = $this->Repo->findById($userId);
-        $this->authorize('delete', $user);
+        $user = $this->userRepo->findById($userId);
         $user->delete();
+
+        return AjaxResponses::SuccessResponse();
+    }
+
+    public function manualVerify($userId)
+    {
+        $this->authorize('manualVerify', User::class);
+        $user = $this->userRepo->findById($userId);
+        $user->markEmailAsVerified();
+        return AjaxResponses::SuccessResponse();
+    }
+
+    public function addRole(UpdateUserPhoto $request, User $user)
+    {
+        $this->authorize('addRole', User::class);
+        $user->assignRole($request->role);
+        newFeedback('موفقیت آمیز', " نقش کاربری {$request->role}  به کاربر {$user->name} داده شد.", 'success');
+        return back();
+    }
+
+    public function removeRole($userId, $role)
+    {
+        $this->authorize('removeRole', User::class);
+        $user = $this->userRepo->findById($userId);
+        $user->removeRole($role);
         return AjaxResponses::SuccessResponse();
     }
 }

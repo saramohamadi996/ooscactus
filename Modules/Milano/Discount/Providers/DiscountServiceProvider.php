@@ -3,6 +3,8 @@ namespace Milano\Discount\Providers;
 
 use Milano\Discount\Models\Discount;
 use Milano\Discount\Policies\DiscountPolicy;
+use Milano\Discount\Repositories\DiscountRepository;
+use Milano\Discount\Repositories\Interfaces\DiscountRepositoryInterface;
 use Milano\RolePermissions\Models\Permission;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Route;
@@ -25,6 +27,7 @@ class DiscountServiceProvider extends ServiceProvider
 
     public function boot()
     {
+        $this->app->bind(DiscountRepositoryInterface::class, DiscountRepository::class);
         config()->set('sidebar.items.discounts', ["icon" => "i-discounts",
             "title" => "تخفیف ها",
             "url" => route('discounts.index'),
