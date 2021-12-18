@@ -1,4 +1,4 @@
-@extends('Dashboard::maste')
+@extends('Dashboard::master')
 @section('breadcrumb')
     <li><a href="{{ route('payments.index') }}" title="تراکنش ها">تراکنش ها</a></li>
 @endsection

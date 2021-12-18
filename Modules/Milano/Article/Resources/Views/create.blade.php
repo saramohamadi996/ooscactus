@@ -1,5 +1,5 @@
 
-@extends('Dashboard::maste')
+@extends('Dashboard::master')
 @section('breadcrumb')
     <li><a href="{{ route('articles.index') }}" title=" مقالات">مقالات</a></li>
     <li><a href="#" title="ایجاد مقاله">ایجاد مقاله</a></li>

@@ -1,5 +1,5 @@
 
-@extends('Dashboard::maste')
+@extends('Dashboard::master')
 @section('content')
 
     @can(\Milano\RolePermissions\Models\Permission::PERMISSION_SELL)

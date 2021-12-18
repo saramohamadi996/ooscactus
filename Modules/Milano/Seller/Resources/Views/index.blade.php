@@ -1,4 +1,4 @@
-@extends('Dashboard::maste')
+@extends('Dashboard::master')
 @section('breadcrumb')
     <li><a href="{{route('sellers.index')}}" title="همکاری با ما">همکاری با  ما</a></li>
 @endsection

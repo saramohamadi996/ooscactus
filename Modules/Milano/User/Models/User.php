@@ -49,7 +49,7 @@ class User extends Authenticatable implements MustVerifyEmail
         [
             'email' => 'customer@site.com',
             'password' => 'customer',
-            'name' => 'Student',
+            'name' => 'Customer',
             'role' => Role::ROLE_CUSTOMER
         ]
     ];

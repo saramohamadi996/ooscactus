@@ -1,4 +1,4 @@
-@extends('Dashboard::maste')
+@extends('Dashboard::master')
 @section('breadcrumb')
     <li><a href="{{route('settings.store')}}" title="تنظیمات">تنظیمات</a></li>
 @endsection

@@ -1,4 +1,4 @@
-@extends('Dashboard::maste')
+@extends('Dashboard::master')
 @section('breadcrumb')
     <li><a href="{{ route('baners.index') }}" title=" شبکه های اجماعی">شبکه های اجماعی</a></li>
     <li><a href="#" title="ویرایش شبکه">ویرایش شبکه</a></li>

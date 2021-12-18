@@ -1,4 +1,5 @@
-<form action="{{route('users.updateImage')}}" method="post" enctype="multipart/form-data">
+{{--<form action="{{route('users.updateImage')}}" method="post" enctype="multipart/form-data">--}}
+<form action="#" method="post" enctype="multipart/form-data">
     @csrf
     <div class="profile__info border cursor-pointer text-center">
         <div class="avatar__img">

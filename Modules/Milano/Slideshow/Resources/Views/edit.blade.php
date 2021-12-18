@@ -1,4 +1,4 @@
-@extends('Dashboard::maste')
+@extends('Dashboard::master')
 @section('breadcrumb')
     <li><a href="{{ route('slideshows.index') }}" title="اسلاید">اسلاید</a></li>
     <li><a href="#" title="ویرایش اسلاید">ویرایش اسلاید</a></li>

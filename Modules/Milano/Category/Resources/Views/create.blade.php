@@ -1,5 +1,4 @@
 
-
 <p class="box__title">ایجاد دسته بندی جدید</p>
 <form action="{{ route('categories.store') }}" method="post" class="padding-30">
     @csrf

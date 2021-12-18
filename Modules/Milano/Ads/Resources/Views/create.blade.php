@@ -1,4 +1,4 @@
-@extends('Dashboard::maste')
+@extends('Dashboard::master')
 @section('breadcrumb')
         <li><a href="{{ route('adss.index') }}" title="تبلیغات ">تبلیغات </a></li>
         <li><a href="{{ route('adss.create') }}" class="is-active" >ایجاد تبلیغ جدید</a></li>

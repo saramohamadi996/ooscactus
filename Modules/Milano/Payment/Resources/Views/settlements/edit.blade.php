@@ -1,4 +1,4 @@
-@extends('Dashboard::maste')
+@extends('Dashboard::master')
 @section('breadcrumb')
     <li><a href="{{ route('purchases.index') }}" title="تسویه حساب ها">تسویه حساب ها</a></li>
     <li><a href="#" title="ویرایش درخواست تسویه حساب">ویرایش درخواست تسویه حساب</a></li>

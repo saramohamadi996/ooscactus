@@ -1,4 +1,4 @@
-@extends('Dashboard::maste')
+@extends('Dashboard::master')
 @section('breadcrumb')
     <li><a href="{{ route('baners.index') }}" title=" شبکه های اجتماعی">شبکه های اجتماعی</a></li>
     <li><a href="#" title="شبکه اجتماعی جدید">شبکه اجتماعی جدید</a></li>

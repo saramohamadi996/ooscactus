@@ -1,4 +1,4 @@
-@extends('Dashboard::maste')
+@extends('Dashboard::master')
 @section('breadcrumb')
     <li><a href="{{route('banners.index')}}" title="بنر">بنر</a></li>
 @endsection

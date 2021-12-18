@@ -11,6 +11,8 @@ use Milano\User\Policies\UserPolicy;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
+use Milano\User\Repositories\Interfaces\UserRepositoryInterface;
+use Milano\User\Repositories\UserRepository;
 
 class UserServiceProvider extends ServiceProvider
 {
@@ -33,6 +35,7 @@ class UserServiceProvider extends ServiceProvider
     }
     public function boot()
     {
+        $this->app->bind(UserRepositoryInterface::class, UserRepository::class);
         config()->set('sidebar.items.users', [
             "icon" => "i-users",
             "title" => "کاربران",

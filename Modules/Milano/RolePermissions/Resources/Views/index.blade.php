@@ -1,4 +1,4 @@
-@extends('Dashboard::maste')
+@extends('Dashboard::master')
 @section('breadcrumb')
     <li><a href="{{ route('role-permissions.index') }}" title="نقش های کاربری">نقش های کاربری</a></li>
 @endsection

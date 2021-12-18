@@ -1,4 +1,4 @@
-@extends("Dashboard::maste")
+@extends("Dashboard::master")
 
 @section("content")
     <div class="col-4 bg-white">

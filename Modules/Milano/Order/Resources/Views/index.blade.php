@@ -1,4 +1,4 @@
-@extends('Dashboard::maste')
+@extends('Dashboard::master')
 @section('breadcrumb')
     <li><a href="{{ route('orders.index') }}" title="سفارشات">سفارشات</a></li>
 @endsection

@@ -1,5 +1,4 @@
 
-
 <p class="box__title">ایجاد نقش کاربری جدید</p>
 <form action="{{ route('role-permissions.store') }}" method="post" class="padding-30">
     @csrf
